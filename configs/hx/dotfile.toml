@@ -1,0 +1,13 @@
+# dotfile-rs config for helix config files
+
+name = "hx"
+description = "Helix dotfile config"
+
+[[configs]]
+name = "main helix config"
+path = "config.toml"
+
+[configs.install_location]
+windows = "$APPDATA\\helix\\config.toml"
+linux = "~/.config/helix/config.toml"
+macos = "~/.config/helix/config.toml"
