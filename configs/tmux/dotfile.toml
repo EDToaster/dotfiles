@@ -1,0 +1,12 @@
+# dotfile-rs config for tmux config files
+
+name = "tmux"
+description = "tmux dotfile config"
+
+[[configs]]
+name = "main tmux config"
+path = ".tmux.conf"
+
+[configs.install_location]
+linux = "~/.tmux.conf"
+macos = "~/.tmux.conf"

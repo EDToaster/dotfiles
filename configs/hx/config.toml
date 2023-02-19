@@ -2,10 +2,14 @@
 # Meant to be symlinked at ~/.config/helix/config.toml for Linux/MacOS
 # or at %AppData%\helix\config.toml
 
-theme = "tokyonight_storm"
+theme = "everforest_dark"
 
 [editor]
 line-number = "relative"
+bufferline = "multiple"
+
+[keys.normal]
+esc = ["collapse_selection", "keep_primary_selection"]
 
 [editor.cursor-shape]
 insert = "bar"
