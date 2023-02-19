@@ -1,14 +1,11 @@
 use colored::Colorize;
-use std::{
-    error::Error,
-    fmt, fs,
-    path::{Path, PathBuf},
-};
+use std::{error::Error, fmt, fs, path::PathBuf};
 use structopt::StructOpt;
 
-use crate::profile::Profile;
+use crate::{profile::Profile, util::absolutize};
 
 mod profile;
+mod util;
 
 #[derive(Debug, StructOpt)]
 #[structopt(name = "Dotfiles", about = "Installs dotfiles using symlinks")]
@@ -36,6 +33,8 @@ impl fmt::Display for ValidationError {
     }
 }
 
+type Links = Vec<(PathBuf, PathBuf)>;
+
 /// For each config, we will validate that
 /// 1. the target path exists, and
 /// 2. the install location is specified in the profile
@@ -43,15 +42,17 @@ impl fmt::Display for ValidationError {
 ///    (symlink is ok, but will show warning)
 /// 4. the install parent path exists. If not, emit a warning.
 /// Returns (number of warnings, number of errors)
-fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize) {
+fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links) {
     let mut errs = 0usize;
     let mut warns = 0usize;
+    let mut links: Links = vec![];
     for config in &prof.configs {
         print!("{} ", "Validating".green());
         println!("{config}");
 
         let mut target_path = profile_base_path.clone();
         target_path.push(&config.path);
+        let target_path = absolutize(&target_path.display().to_string());
 
         // check target path exists
         if !target_path.exists() {
@@ -82,6 +83,7 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize) {
                         "\t{} install path already exists as a file.",
                         "[ERROR]".red(),
                     );
+                    continue;
                 }
             }
 
@@ -93,6 +95,7 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize) {
                         "\t{} install path does not have a parent directory.",
                         "[ERROR]".red(),
                     );
+                    continue;
                 }
                 Some(parent_path) => {
                     if !parent_path.exists() {
@@ -104,6 +107,9 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize) {
                     }
                 }
             }
+
+            // passed validation, add to links
+            links.push((install_path, target_path));
         } else {
             errs += 1;
             println!(
@@ -111,15 +117,35 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize) {
                 "[ERROR]".red(),
                 std::env::consts::OS
             );
+            continue;
         }
 
         println!();
     }
 
-    (warns, errs)
+    (warns, errs, links)
 }
 
-fn install(prof: &Profile) {}
+/// Create a symlink from inst to target.
+/// Todo: https://doc.rust-lang.org/std/fs/fn.soft_link.html
+/// Since this is deprecated, change to platform-dependent implmentation
+/// when allowing for whole-directory symlinks.
+#[allow(deprecated)]
+fn symlink(inst: &PathBuf, target: &PathBuf) -> Result<(), std::io::Error> {
+    println!("Creating link from {inst:?} to {target:?}");
+    match fs::remove_file(inst) {
+        _ => {}
+    } // ignore error
+    fs::soft_link(target, inst)?;
+    Ok(())
+}
+
+fn install(links: &Links) -> Result<(), std::io::Error> {
+    for (inst, target) in links {
+        symlink(inst, target)?;
+    }
+    Ok(())
+}
 
 fn main() -> Result<(), Box<dyn Error>> {
     let opt = Opt::from_args();
@@ -135,7 +161,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         dbg!(&profile);
     }
 
-    let (warns, errs) = validate(&opt.profile, &profile);
+    let (warns, errs, links) = validate(&opt.profile, &profile);
     println!("{warns} warnings found, {errs} errors found.");
 
     if errs > 0 {
@@ -143,7 +169,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     }
 
     if opt.install {
-        install(&profile)
+        install(&links)?;
     }
 
     Ok(())

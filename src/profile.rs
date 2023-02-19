@@ -1,10 +1,8 @@
-use std::{
-    env,
-    fmt::Display,
-    path::{Path, PathBuf},
-};
+use std::{fmt::Display, path::PathBuf};
 
 use serde::Deserialize;
+
+use crate::util::absolutize;
 
 #[derive(Debug, Deserialize)]
 pub struct Profile {
@@ -41,16 +39,6 @@ impl Display for Config {
             self.path
         )
     }
-}
-
-fn absolutize(s: &str) -> PathBuf {
-    // shell expand, if some of the environment variables don't exist, return original.
-    let expanded = shellexpand::full(s)
-        .map(|s| s.into_owned())
-        .unwrap_or(s.to_owned());
-    let mut abs_path = env::current_dir().unwrap();
-    abs_path.push(expanded);
-    abs_path
 }
 
 impl Config {
