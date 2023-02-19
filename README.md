@@ -63,5 +63,5 @@ dotfiles configs/hx
 
 Run installation on `configs/hx`
 ```bash
-dotfiles -- -i configs/hx
+dotfiles -i configs/hx
 ```
