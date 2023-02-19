@@ -42,3 +42,17 @@ windows = "$APPDATA/some/path/.otherrc"
 linux = "~/.config/some/path/.otherrc"
 macos = "~/.cofnig/some/path/.otherrc"
 ```
+
+## Running dotfiles
+
+Examples: 
+
+Run validations on `configs/hx`
+```bash
+cargo run -- configs/hx
+```
+
+Run installation on `configs/hx`
+```bash
+cargo run -- -i configs/hx
+```

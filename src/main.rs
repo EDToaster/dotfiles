@@ -33,7 +33,12 @@ impl fmt::Display for ValidationError {
     }
 }
 
-type Links = Vec<(PathBuf, PathBuf)>;
+struct Link {
+    install_path: PathBuf,
+    parent_path: PathBuf,
+    target_path: PathBuf,
+}
+type Links = Vec<Link>;
 
 /// For each config, we will validate that
 /// 1. the target path exists, and
@@ -105,11 +110,14 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
                             "[WARNING]".yellow(),
                         );
                     }
+                    // passed validation, add to links
+                    links.push(Link {
+                        install_path: install_path.clone(),
+                        parent_path: parent_path.into(),
+                        target_path,
+                    });
                 }
             }
-
-            // passed validation, add to links
-            links.push((install_path, target_path));
         } else {
             errs += 1;
             println!(
@@ -131,18 +139,33 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
 /// Since this is deprecated, change to platform-dependent implmentation
 /// when allowing for whole-directory symlinks.
 #[allow(deprecated)]
-fn symlink(inst: &PathBuf, target: &PathBuf) -> Result<(), std::io::Error> {
-    println!("Creating link from {inst:?} to {target:?}");
-    match fs::remove_file(inst) {
+fn symlink(link: &Link) -> Result<(), std::io::Error> {
+    // Make sure parent path exists
+    println!(
+        "Creating parent directory (if needed) {:?}",
+        link.parent_path
+    );
+    fs::create_dir_all(&link.parent_path)?;
+
+    println!(
+        "Removing existing install location (if needed) {:?}",
+        link.install_path
+    );
+    match fs::remove_file(&link.install_path) {
         _ => {}
     } // ignore error
-    fs::soft_link(target, inst)?;
+
+    println!(
+        "Creating link {:?} -> {:?}",
+        link.install_path, link.target_path
+    );
+    fs::soft_link(&link.target_path, &link.install_path)?;
     Ok(())
 }
 
 fn install(links: &Links) -> Result<(), std::io::Error> {
-    for (inst, target) in links {
-        symlink(inst, target)?;
+    for link in links {
+        symlink(link)?;
     }
     Ok(())
 }
