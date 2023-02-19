@@ -43,16 +43,25 @@ linux = "~/.config/some/path/.otherrc"
 macos = "~/.cofnig/some/path/.otherrc"
 ```
 
+## Installation
+
+Build from source
+```bash
+git clone https://github.com/EDToaster/dotfiles.git
+cd dotfiles
+cargo install --path .
+```
+
 ## Running dotfiles
 
 Examples: 
 
 Run validations on `configs/hx`
 ```bash
-cargo run -- configs/hx
+dotfiles configs/hx
 ```
 
 Run installation on `configs/hx`
 ```bash
-cargo run -- -i configs/hx
+dotfiles -- -i configs/hx
 ```
