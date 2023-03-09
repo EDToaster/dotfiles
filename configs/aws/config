@@ -4,3 +4,4 @@
 [default]
 # default region is IAD
 region = us-east-1
+cli_auto_prompt = on-partial
