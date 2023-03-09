@@ -1,0 +1,12 @@
+# dotfile-rs config for helix config files
+
+name = "aws"
+description = "AWS dotfile config"
+
+[[configs]]
+name = "main AWS config"
+path = "config"
+
+[configs.install_location]
+linux = "~/.aws/config"
+macos = "~/.aws/config"
