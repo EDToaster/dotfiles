@@ -1,0 +1,12 @@
+# dotfile-rs config for starship config files
+
+name = "starship"
+description = "starship dotfile config"
+
+[[configs]]
+name = "main starship config"
+path = "config.toml"
+
+[configs.install_location]
+linux = "~/.config/starship.toml"
+macos = "~/.config/starship.toml"

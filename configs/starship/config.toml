@@ -1,0 +1,29 @@
+# Starship toml configuration for EDToaster
+
+# Get editor completions based on the config schema
+"$schema" = 'https://starship.rs/config-schema.json'
+
+format = """$time$username$hostname$directory$all"""
+
+# Disable the package module, hiding it from the prompt completely
+[aws]
+disabled = true
+
+[hostname]
+ssh_symbol = '@ '
+style      = 'bold green'
+format     = '[$ssh_symbol$hostname]($style) '
+
+[username]
+disabled = true
+
+[cmd_duration]
+disabled = true
+
+[time]
+disabled = false
+format   = '[$time](bold cyan) '
+
+[directory]
+truncation_length = 32
+truncation_symbol = '…/'
