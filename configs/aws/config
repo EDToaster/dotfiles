@@ -2,4 +2,5 @@
 # Meant to be symlinked at ~/.aws/config for Linux/MacOS
 
 [default]
-region = us-west-2 # default region is PDX
+# default region is PDX
+region = us-west-2
