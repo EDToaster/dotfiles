@@ -11,3 +11,12 @@ path = "config.toml"
 windows = "$APPDATA\\helix\\config.toml"
 linux = "~/.config/helix/config.toml"
 macos = "~/.config/helix/config.toml"
+
+[[configs]]
+name = "everocean theme"
+path = "themes/everocean.toml"
+
+[configs.install_location]
+windows = "$APPDATA\\helix\\themes\\everocean.toml"
+linux = "~/.config/helix/themes/everocean.toml"
+macos = "~/.config/helix/themes/everocean.toml"
