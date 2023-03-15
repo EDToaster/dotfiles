@@ -5,14 +5,24 @@
 theme = "everocean"
 
 [editor]
+# Change line numbers to relative in non-insert mode
 line-number = "relative"
-bufferline = "multiple"
-true-color = true
+bufferline  = "multiple"
+true-color  = true
 
 [keys.normal]
-esc = ["collapse_selection", "keep_primary_selection"]
+# Allow <esc> to collapse selection
+esc         = ["collapse_selection", "keep_primary_selection"]
+
+# Unbind default movement keys and bind new ones
+h           = "no_op"
+j           = "no_op"
+k           = "move_char_left"
+l           = "move_line_down"
+";"         = "move_line_up"
+"'"         = "move_char_right"
 
 [editor.cursor-shape]
-insert = "bar"
-normal = "block"
-select = "underline"
+insert      = "bar"
+normal      = "block"
+select      = "underline"
