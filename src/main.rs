@@ -1,14 +1,11 @@
 use colored::Colorize;
-use std::{
-    error::Error,
-    fmt, fs,
-    path::PathBuf,
-    process::Command,
-};
+use logger::Logger;
+use std::{error::Error, fmt, fs, path::PathBuf, process::Command};
 use structopt::StructOpt;
 
 use crate::{profile::Profile, util::absolutize};
 
+mod logger;
 mod profile;
 mod util;
 
@@ -53,45 +50,45 @@ type Links = Vec<Link>;
 /// 4. the install parent path exists. If not, emit a warning.
 /// Returns (number of warnings, number of errors)
 fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links) {
+    let logger = Logger::new();
+
     let mut errs = 0usize;
     let mut warns = 0usize;
     let mut links: Links = vec![];
     for config in &prof.configs {
-        print!("{} ", "Validating".green());
-        println!("{config}");
+        logger.info(&format!("{} {config}", "Validating".green()));
+
+        let logger = logger.scope();
 
         // Run pre-validation commands on the profile
         for cmd in &prof.validation_commands {
-            println!("\t{} Spwaning validation command {cmd:?}", "[INFO]".green());
-            if let Some(prog) = cmd.get(0) {
-                let proc = Command::new(prog).args(&cmd[1..]).spawn();
-                match proc {
-                    Ok(mut proc) => {
-                        // Wait for proc return value
-                        match proc.wait() {
-                            Ok(result) => {
-                                if !result.success() {
-                                    errs += 1;
-                                    println!("\t{} Validation command failed.", "[ERROR]".red())
-                                }
-                            }
-                            Err(e) => {
-                                errs += 1;
-                                println!("\t{} Validation command failed: {e}", "[ERROR]".red());
-                            }
+            logger.info(&format!("Spawning validation command {cmd:?}"));
+            if cmd.is_empty() {
+                errs += 1;
+                logger.error("Validation command cannot be empty.");
+                continue;
+            }
+
+            let proc = Command::new(&cmd[0]).args(&cmd[1..]).spawn();
+
+            match proc {
+                Ok(mut proc) => {
+                    if let Ok(result) = proc.wait() {
+                        if !result.success() {
+                            errs += 1;
+                            logger.error("Validation command failed");
                         }
-                    }
-                    Err(e) => {
+                    } else {
                         errs += 1;
-                        println!(
-                            "\t{} Something went wrong with spawning the validation command: {e}",
-                            "[ERROR]".red()
-                        );
+                        logger.error("Validation command failed");
                     }
                 }
-            } else {
-                errs += 1;
-                println!("\t{} validation command cannot be empty.", "[ERROR]".red());
+                Err(e) => {
+                    errs += 1;
+                    logger.error(&format!(
+                        "Something went wrong with spawning the validation command: {e}"
+                    ));
+                }
             }
         }
 
@@ -102,11 +99,7 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
         // check target path exists
         if !target_path.exists() {
             errs += 1;
-            println!(
-                "\t{} target path {:?} does not exist.",
-                "[ERROR]".red(),
-                target_path
-            );
+            logger.error(&format!("Target path {target_path:?} does not exist."));
         }
 
         // check the install location is specified in the profile
@@ -118,16 +111,10 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
             if install_path.exists() {
                 if install_path.is_symlink() {
                     warns += 1;
-                    println!(
-                        "\t{} install path exists as a symlink already.",
-                        "[WARNING]".yellow()
-                    );
+                    logger.warn("Install path exists as a symlink already.");
                 } else {
                     errs += 1;
-                    println!(
-                        "\t{} install path already exists as a file.",
-                        "[ERROR]".red(),
-                    );
+                    logger.error("Install path already exists as a file. Delete this file and rerun validations if it is safe to do so.");
                     continue;
                 }
             }
@@ -136,19 +123,13 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
             match parent_path {
                 None => {
                     errs += 1;
-                    println!(
-                        "\t{} install path does not have a parent directory.",
-                        "[ERROR]".red(),
-                    );
+                    logger.error("Install path does not have a parent directory.");
                     continue;
                 }
                 Some(parent_path) => {
                     if !parent_path.exists() {
                         warns += 1;
-                        println!(
-                            "\t{} install path's parent does not exist. It will be created.",
-                            "[WARNING]".yellow(),
-                        );
+                        logger.warn("Install path's parent does not exist. It will be created.");
                     }
                     // passed validation, add to links
                     links.push(Link {
@@ -160,11 +141,10 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
             }
         } else {
             errs += 1;
-            println!(
-                "\t{} install path is not specified for platform {}",
-                "[ERROR]".red(),
+            logger.error(&format!(
+                "Install path is not specified for platform {}",
                 std::env::consts::OS
-            );
+            ));
             continue;
         }
 
