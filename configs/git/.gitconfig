@@ -3,10 +3,30 @@
 # and ~/.gitconfig for Windows
 
 [user]
-    email = howard3061@gmail.com
-    name = EDToaster
+    email  = howard3061@gmail.com
+    name   = EDToaster
 
 [credential]
     helper = store
+
 [core]
-	editor = hx
+    editor = hx
+    pager = delta
+
+[interactive]
+    diffFilter = delta --color-only
+
+[delta]
+    navigate = true    # use n and N to move between diff sections
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[alias]
+    dag    = log --graph --format='format:%c(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
+	cane   = commit --amend --no-edit
+
