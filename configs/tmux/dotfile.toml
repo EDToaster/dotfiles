@@ -3,6 +3,10 @@
 name = "tmux"
 description = "tmux dotfile config"
 
+validation_commands = [
+  ["tmux", "--version"],
+]
+
 [[configs]]
 name = "main tmux config"
 path = ".tmux.conf"

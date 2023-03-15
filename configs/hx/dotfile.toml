@@ -3,6 +3,10 @@
 name = "hx"
 description = "Helix dotfile config"
 
+validation_commands = [
+  ["hx", "--version"],    
+]
+
 [[configs]]
 name = "main helix config"
 path = "config.toml"

@@ -1,5 +1,10 @@
 use colored::Colorize;
-use std::{error::Error, fmt, fs, path::PathBuf};
+use std::{
+    error::Error,
+    fmt, fs,
+    path::PathBuf,
+    process::Command,
+};
 use structopt::StructOpt;
 
 use crate::{profile::Profile, util::absolutize};
@@ -54,6 +59,41 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
     for config in &prof.configs {
         print!("{} ", "Validating".green());
         println!("{config}");
+
+        // Run pre-validation commands on the profile
+        for cmd in &prof.validation_commands {
+            println!("\t{} Spwaning validation command {cmd:?}", "[INFO]".green());
+            if let Some(prog) = cmd.get(0) {
+                let proc = Command::new(prog).args(&cmd[1..]).spawn();
+                match proc {
+                    Ok(mut proc) => {
+                        // Wait for proc return value
+                        match proc.wait() {
+                            Ok(result) => {
+                                if !result.success() {
+                                    errs += 1;
+                                    println!("\t{} Validation command failed.", "[ERROR]".red())
+                                }
+                            }
+                            Err(e) => {
+                                errs += 1;
+                                println!("\t{} Validation command failed: {e}", "[ERROR]".red());
+                            }
+                        }
+                    }
+                    Err(e) => {
+                        errs += 1;
+                        println!(
+                            "\t{} Something went wrong with spawning the validation command: {e}",
+                            "[ERROR]".red()
+                        );
+                    }
+                }
+            } else {
+                errs += 1;
+                println!("\t{} validation command cannot be empty.", "[ERROR]".red());
+            }
+        }
 
         let mut target_path = profile_base_path.clone();
         target_path.push(&config.path);

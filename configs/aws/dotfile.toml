@@ -3,6 +3,10 @@
 name = "aws"
 description = "AWS dotfile config"
 
+validation_commands = [
+  ["aws", "--version"],    
+]
+
 [[configs]]
 name = "main AWS config"
 path = "config"

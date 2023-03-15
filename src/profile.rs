@@ -9,6 +9,8 @@ pub struct Profile {
     pub name: String,
     pub description: String,
     pub configs: Vec<Config>,
+    #[serde(default)]
+    pub validation_commands: Vec<Vec<String>>,
 }
 
 #[derive(Debug, Deserialize)]

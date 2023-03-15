@@ -13,6 +13,12 @@ name = "sample"
 # Description of the configuration, required.
 description = "dotfile configuration for sample"
 
+# Pre-validations to run, these will be run against the PATH variable.
+validation-commands = [
+    ["git", "--help"],
+    ["cargo", "--version"],
+]
+
 # Array of configurations, you can have as many configurations as you
 # want here. Each `configs` section corresponds to a separate file to be symlinked.
 [[configs]]

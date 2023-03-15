@@ -3,6 +3,16 @@
 name = "git"
 description = "git dotfile config"
 
+# Required installations
+# - Helix editor
+# - Delta git diff extension
+# - git itself
+validation_commands = [
+  ["hx", "--version"], 
+  ["delta", "--version"], 
+  ["git", "--version"], 
+]
+
 [[configs]]
 name = "Main git config"
 path = ".gitconfig"
