@@ -1,0 +1,13 @@
+# dotfile-rs config for helix config files
+
+name = "git"
+description = "git dotfile config"
+
+[[configs]]
+name = "Main git config"
+path = ".gitconfig"
+
+[configs.install_location]
+windows = "~/.gitconfig"
+linux = "~/.gitconfig"
+macos = "~/.aws/config"

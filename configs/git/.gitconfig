@@ -1,0 +1,12 @@
+# .gitconfig default configs for EDToaster
+# Meant to be symlinked at ~/.gitconfig for Linux/MacOS
+# and ~/.gitconfig for Windows
+
+[user]
+    email = howard3061@gmail.com
+    name = EDToaster
+
+[credential]
+    helper = store
+[core]
+	editor = hx
