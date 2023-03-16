@@ -3,6 +3,8 @@
 This is a system to install various dotfiles (`.bashrc`, `.zshrc`, `helix/config.toml`, etc.)
 to a configured location using symlinks.
 
+## Example Configuration
+
 Check out `configs/hx/dotfile.toml` for an example. 
 The current `dotfile.toml` spec is as follows:
 
@@ -46,7 +48,7 @@ path = ".otherrc"
 [configs.install_location]
 windows = "$APPDATA/some/path/.otherrc"
 linux = "~/.config/some/path/.otherrc"
-macos = "~/.cofnig/some/path/.otherrc"
+macos = "~/.config/some/path/.otherrc"
 ```
 
 ## Installation
