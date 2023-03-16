@@ -10,6 +10,8 @@ line-number = "relative"
 bufferline  = "multiple"
 true-color  = true
 
+shell       = ["zsh", "-c"]
+
 [keys.normal]
 # Allow <esc> to collapse selection
 esc         = ["collapse_selection", "keep_primary_selection"]
