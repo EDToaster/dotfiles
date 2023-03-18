@@ -1,0 +1,13 @@
+# dotfile-rs config for wezterm config files
+
+name = "wezterm"
+description = "wezterm dotfile config"
+
+[[configs]]
+name = "main wezterm config"
+path = ".wezterm.lua"
+
+[configs.install_location]
+windows = "~\\.wezterm.lua"
+linux = "~/.wezterm.lua"
+macos = "~/.wezterm.lua"
