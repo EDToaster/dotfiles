@@ -42,12 +42,13 @@ struct Link {
 }
 type Links = Vec<Link>;
 
-/// For each config, we will validate that
-/// 1. the target path exists, and
-/// 2. the install location is specified in the profile
-/// 3. the install location doesn't already have a file
-///    (symlink is ok, but will show warning)
-/// 4. the install parent path exists. If not, emit a warning.
+/// For each config, we will run the following validations:
+/// * Run pre-validation commands specified in the dotfile
+/// * Check the target path exists, and
+/// * Check the install location is specified in the profile
+/// * Check the install location doesn't already have a file
+///   that is not a symlink
+/// * Check the install parent path exists. If not, emit a warning.
 /// Returns (number of warnings, number of errors)
 fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links) {
     let logger = Logger::new();
