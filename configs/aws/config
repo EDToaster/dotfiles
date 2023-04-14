@@ -6,6 +6,5 @@
 region          = us-east-1
 cli_auto_prompt = on-partial
 cli_history     = enabled
-cli_pager       = hx
 max_attempts    = 1
 output          = json
