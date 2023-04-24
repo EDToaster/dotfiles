@@ -1,0 +1,12 @@
+# dotfile-rs config for macchina config files
+
+name = "macchina"
+description = "macchina dotfile config"
+
+[[configs]]
+name = "macchina theme"
+path = "theme.toml"
+
+[configs.install_location]
+linux = "~/.config/macchina/themes/theme.toml"
+macos = "~/.config/macchina/themes/theme.toml"

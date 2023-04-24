@@ -1,0 +1,6 @@
+hide_ascii = true
+
+[palette]
+visible = true
+type = "Light"
+glyph = "██ "
