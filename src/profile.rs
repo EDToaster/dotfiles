@@ -11,6 +11,8 @@ pub struct Profile {
     pub configs: Vec<Config>,
     #[serde(default)]
     pub validation_commands: Vec<Vec<String>>,
+    #[serde(default)]
+    pub optional_validation_commands: Vec<Vec<String>>,
 }
 
 #[derive(Debug, Deserialize)]

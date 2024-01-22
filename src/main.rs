@@ -12,7 +12,7 @@ mod util;
 #[derive(Debug, StructOpt)]
 #[structopt(name = "Dotfiles", about = "Installs dotfiles using symlinks")]
 struct Opt {
-    /// Enable dryrun mode, run all validations
+    /// Run all validations and install the files. Omit to run in dryrun mode
     #[structopt(short, long)]
     install: bool,
 
@@ -43,7 +43,7 @@ struct Link {
 type Links = Vec<Link>;
 
 /// For each config, we will run the following validations:
-/// * Run pre-validation commands specified in the dotfile
+/// * Run validation commands specified in the dotfile
 /// * Check the target path exists, and
 /// * Check the install location is specified in the profile
 /// * Check the install location doesn't already have a file
@@ -54,6 +54,7 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
     let logger = Logger::new();
 
     let mut errs = 0usize;
+    let mut opt_errs = 0usize;
     let mut warns = 0usize;
     let mut links: Links = vec![];
     for config in &prof.configs {
@@ -87,6 +88,38 @@ fn validate(profile_base_path: &PathBuf, prof: &Profile) -> (usize, usize, Links
                 Err(e) => {
                     errs += 1;
                     logger.error(&format!(
+                        "Something went wrong with spawning the validation command: {e}"
+                    ));
+                }
+            }
+        }
+
+        for cmd in &prof.optional_validation_commands {
+            logger.info(&format!("Spawning optional validation command {cmd:?}"));
+
+            if cmd.is_empty() {
+                errs += 1;
+                logger.error("Validation command cannot be empty.");
+                continue;
+            }
+
+            let proc = Command::new(&cmd[0]).args(&cmd[1..]).spawn();
+
+            match proc {
+                Ok(mut proc) => {
+                    if let Ok(result) = proc.wait() {
+                        if !result.success() {
+                            opt_errs += 1;
+                            logger.warn("Validation command failed");
+                        }
+                    } else {
+                        opt_errs += 1;
+                        logger.warn("Validation command failed");
+                    }
+                }
+                Err(e) => {
+                    opt_errs += 1;
+                    logger.warn(&format!(
                         "Something went wrong with spawning the validation command: {e}"
                     ));
                 }

@@ -7,6 +7,10 @@ validation_commands = [
   ["hx", "--version"]
 ]
 
+optional_validation_commands = [
+  ["zellij", "--version"]
+]
+
 [[configs]]
 name = "main helix config"
 path = "config.toml"
