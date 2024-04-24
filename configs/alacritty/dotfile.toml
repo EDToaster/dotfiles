@@ -1,0 +1,34 @@
+# dotfile-rs config for helix config files
+
+name = "alacritty"
+description = "alacritty dotfile config"
+
+validation_commands = [
+]
+
+optional_validation_commands = [
+]
+
+[[configs]]
+name = "main alacritty config"
+path = "alacritty.toml"
+
+[configs.install_location]
+linux = "~/.config/alacritty/alacritty.toml"
+macos = "~/.config/alacritty/alacritty.toml"
+
+[[configs]]
+name = "theme"
+path = "catppuccin-frappe.toml"
+
+[configs.install_location]
+linux = "~/.config/alacritty/catppuccin-frappe.toml"
+macos = "~/.config/alacritty/catppuccin-frappe.toml"
+
+[[configs]]
+name = "theme folder"
+path = "themes"
+
+[configs.install_location]
+linux = "~/.config/alacritty/themes"
+macos = "~/.config/alacritty/themes"

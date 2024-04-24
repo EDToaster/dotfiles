@@ -1,0 +1,30 @@
+import = [
+  # "~/.config/alacritty/themes/themes/citylights.toml"
+  "~/.config/alacritty/catppuccin-frappe.toml"
+]
+
+[window]
+option_as_alt = "Both"
+
+[window.padding]
+x = 10
+y = 10
+
+[font]
+size = 13
+
+[font.normal]
+family = "MesloLGSDZ Nerd Font Mono"
+style = "Regular"
+
+[font.bold]
+family = "MesloLGSDZ Nerd Font Mono"
+style = "Bold"
+
+[font.italic]
+family = "MesloLGSDZ Nerd Font Mono"
+style = "Italic"
+
+[font.bold_italic]
+family = "MesloLGSDZ Nerd Font Mono"
+style = "Bold Italic"
