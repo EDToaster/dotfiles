@@ -2,7 +2,7 @@
 # Meant to be symlinked at ~/.config/helix/config.toml for Linux/MacOS
 # or at %AppData%\helix\config.toml
 
-theme = "everocean"
+theme = "catppuccin_frappe"
 
 [editor]
 # Change line numbers to relative in non-insert mode
