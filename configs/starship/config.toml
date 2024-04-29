@@ -3,22 +3,17 @@
 # Get editor completions based on the config schema
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = """$time$username$hostname$directory$all"""
-
-# Disable the package module, hiding it from the prompt completely
-[aws]
-disabled = true
+format    = """
+$time\
+$hostname\
+$directory\n\
+${custom.bws}\
+$character\
+"""
 
 [hostname]
-ssh_symbol = '@ '
-style      = 'bold green'
-format     = '[$ssh_symbol$hostname]($style) '
-
-[username]
-disabled = true
-
-[cmd_duration]
-disabled = true
+style  = 'bold green'
+format = '[@dev-pdx]($style) '
 
 [time]
 disabled = false
@@ -27,3 +22,14 @@ format   = '[$time](bold cyan) '
 [directory]
 truncation_length = 32
 truncation_symbol = '…/'
+style = 'cyan'
+
+[character]
+success_symbol = '[❯](bold green)[❯](bold cyan)'
+error_symbol = '[❯❯](bold red)'
+vimcmd_symbol = '[❮❮](bold purple)'
+
+[custom.bws]
+command = 'basename $(dirname $(upfind . -name packageInfo))'
+format  = '[$output](bold italic purple) '
+when    = 'basename $(dirname $(upfind . -name packageInfo))'
