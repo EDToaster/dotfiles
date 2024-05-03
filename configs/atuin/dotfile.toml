@@ -1,0 +1,17 @@
+# dotfile-rs config for helix config files
+
+name = "atuin"
+description = "atuin dotfile config"
+
+validation_commands = [ ["atuin", "-V"] ]
+
+optional_validation_commands = []
+
+[[configs]]
+name = "main atuin config"
+path = "config.toml"
+
+[configs.install_location]
+linux = "~/.config/atuin/config.toml"
+macos = "~/.config/atuin/config.toml"
+
