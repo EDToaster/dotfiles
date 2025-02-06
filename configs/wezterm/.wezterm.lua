@@ -1,6 +1,9 @@
 local wezterm = require 'wezterm'
 
-return {
-  color_scheme = "Ocean (base16)",
-  window_background_opacity = 0.75,
-}
+local config = wezterm.config_builder()
+
+config.color_scheme = "Ocean (base16)"
+config.window_background_opacity = 1.0
+
+
+return config
