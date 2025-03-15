@@ -10,7 +10,4 @@ validation_commands = [
 [[configs]]
 name = "main AWS config"
 path = "config"
-
-[configs.install_location]
-linux = "~/.aws/config"
-macos = "~/.aws/config"
+install_location = { linux = "~/.aws/config", macos = "~/.aws/config" }
