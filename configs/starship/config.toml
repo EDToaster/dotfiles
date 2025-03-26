@@ -9,10 +9,8 @@ $hostname\
 $directory\
 $git_branch\
 $git_commit\
-$git_state\
+$git_state\n\
 $git_metrics\
-$git_status\n\
-${custom.bws}\
 $character\
 """
 
@@ -33,8 +31,3 @@ style = 'cyan'
 success_symbol = '[❯](bold green)[❯](bold cyan)'
 error_symbol = '[❯❯](bold red)'
 vimcmd_symbol = '[❮❮](bold purple)'
-
-[custom.bws]
-command = 'basename $(dirname $(upfind . -name packageInfo))'
-format  = '[$output](bold italic purple) '
-when    = 'basename $(dirname $(upfind . -name packageInfo))'

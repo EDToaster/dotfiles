@@ -8,7 +8,8 @@ validation_commands = [
 ]
 
 optional_validation_commands = [
-  ["zellij", "--version"]
+  ["zellij", "--version"],
+  ["yazi", "--version"]
 ]
 
 [[configs]]
@@ -20,3 +21,9 @@ install_location = { windows = "$APPDATA\\helix\\config.toml", linux = "~/.confi
 name = "everocean theme"
 path = "themes/everocean.toml"
 install_location = { windows = "$APPDATA\\helix\\themes\\everocean.toml", linux = "~/.config/helix/themes/everocean.toml", macos = "~/.config/helix/themes/everocean.toml" }
+
+[[configs]]
+name = "yazi-picker"
+path = "yazi-picker.sh"
+install_location = { windows = "$APPDATA\\helix\\yazi-picker.sh", linux = "~/.config/helix/yazi-picker.sh", macos = "~/.config/helix/yazi-picker.sh" }
+
