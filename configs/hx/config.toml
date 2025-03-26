@@ -50,4 +50,4 @@ z = [
 ]
 
 # Only works in non-windows environments :(
-e = ":open %sh{bash ~/.config/helix/yazi-picker.sh %{buffer_name}}"
+e = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
