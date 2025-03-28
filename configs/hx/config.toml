@@ -27,19 +27,7 @@ l   = "move_line_down"
 ";" = "move_line_up"
 "'" = "move_char_right"
 
-[editor.cursor-shape]
-insert = "bar"
-normal = "block"
-select = "underline"
-
-# [editor.file-picker]
-# hidden = false
-
-[editor.lsp]
-display-inlay-hints = true
-
-[editor.inline-diagnostics]
-cursor-line = "warning"
+C-r = ":reload"
 
 [keys.normal.space]
 m = ":toggle-option soft-wrap.enable"
@@ -50,4 +38,39 @@ z = [
 ]
 
 # Only works in non-windows environments :(
-e = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
+# Open current buffer in Yazi
+e     = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
+# Open pwd in Yazi
+S-e = ":open %sh{~/.config/helix/yazi-picker.sh}"
+
+C-w = ":buffer-close"
+C-r = ":config-reload"
+
+[keys.normal.space.","]
+a = ":sh git add -A"
+s = ":sh git status"
+c = ":sh git commit"
+b = ":echo %sh{git blame -L %{cursor_line},%{cursor_line} -- %{buffer_name}}"
+w = ":sh gh browse %{buffer_name}:%{cursor_line}"
+
+g = ":sh zellij run -x 10%% -y 10%% --width 80%% --height 80%% --pinned true -fc -n 'lazygit -- q to quit' -- lazygit"
+
+[editor.cursor-shape]
+insert = "bar"
+normal = "block"
+select = "underline"
+
+[editor.lsp]
+display-inlay-hints = true
+
+[editor.inline-diagnostics]
+cursor-line = "warning"
+
+[editor.indent-guides]
+render = true
+character = "┆"
+skip-levels = 1
+
+[editor.file-picker]
+# Show hidden files
+hidden = false
