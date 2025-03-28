@@ -8,6 +8,12 @@ theme = "catppuccin_frappe"
 # Change line numbers to relative in non-insert mode
 line-number = "relative"
 bufferline  = "always"
+
+rulers = [120]
+
+# Add horizontal line to current cursor
+cursorline = true
+
 true-color  = true
 color-modes = true
 
@@ -16,10 +22,10 @@ shell = ["zsh", "-c"]
 
 end-of-line-diagnostics = "hint"
 
-[editor.statusline.mode]
-normal = "🏄 NORMAL"
-insert = "✏️ INSERT"
-select = "🔍 SELECT"
+[editor.statusline]
+left = [ "mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator", "separator", "version-control" ]
+mode = { normal = "🏄 NORMAL", insert = "👉 INSERT", select = "🔍 SELECT" }
+separator = " "
 
 [keys.normal]
 # Allow <esc> to collapse selection
@@ -33,7 +39,30 @@ l   = "move_line_down"
 ";" = "move_line_up"
 "'" = "move_char_right"
 
-C-r = ":reload"
+C-r   = ":reload"
+C-w   = ":buffer-close"
+"C-left" = "goto_previous_buffer"
+"C-right" = "goto_next_buffer"
+"C-," = "goto_previous_buffer"
+"C-." = "goto_next_buffer"
+# Move line up/down using Control + arrow
+"C-up" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_up",
+  "paste_before"
+]
+
+"C-down" = [
+  "extend_to_line_bounds",
+  "delete_selection",
+  "move_line_down",
+  "paste_before"
+]
+
+# This overrides extend_to_line_bounds, see same for select mode
+x = "select_line_below"
+X = "select_line_above"
 
 [keys.normal.space]
 m = ":toggle-option soft-wrap.enable"
@@ -47,9 +76,8 @@ z = [
 # Open current buffer in Yazi
 e     = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
 # Open pwd in Yazi
-S-e   = ":open %sh{~/.config/helix/yazi-picker.sh}"
+E   = ":open %sh{~/.config/helix/yazi-picker.sh}"
 
-C-w   = ":buffer-close"
 C-r   = ":config-reload"
 
 [keys.normal.space.","]
@@ -61,6 +89,11 @@ w = ":sh gh browse %{buffer_name}:%{cursor_line}"
 
 g = ":sh zellij run -x 10%% -y 10%% --width 80%% --height 80%% --pinned true -fc -n 'lazygit -- q to quit' -- lazygit"
 
+
+[keys.select]
+x = "select_line_below"
+X = "select_line_above"
+
 [editor.cursor-shape]
 insert = "bar"
 normal = "block"
@@ -68,6 +101,7 @@ select = "underline"
 
 [editor.lsp]
 display-inlay-hints = true
+display-messages    = true
 
 [editor.inline-diagnostics]
 cursor-line = "warning"
