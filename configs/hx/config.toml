@@ -7,13 +7,19 @@ theme = "catppuccin_frappe"
 [editor]
 # Change line numbers to relative in non-insert mode
 line-number = "relative"
-bufferline  = "multiple"
+bufferline  = "always"
 true-color  = true
+color-modes = true
 
 # Set default shell for pipe, sh, insert-output, etc.
 shell = ["zsh", "-c"]
 
 end-of-line-diagnostics = "hint"
+
+[editor.statusline.mode]
+normal = "🏄 NORMAL"
+insert = "✏️ INSERT"
+select = "🔍 SELECT"
 
 [keys.normal]
 # Allow <esc> to collapse selection
@@ -41,10 +47,10 @@ z = [
 # Open current buffer in Yazi
 e     = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
 # Open pwd in Yazi
-S-e = ":open %sh{~/.config/helix/yazi-picker.sh}"
+S-e   = ":open %sh{~/.config/helix/yazi-picker.sh}"
 
-C-w = ":buffer-close"
-C-r = ":config-reload"
+C-w   = ":buffer-close"
+C-r   = ":config-reload"
 
 [keys.normal.space.","]
 a = ":sh git add -A"
