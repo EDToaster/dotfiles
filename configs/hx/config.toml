@@ -2,12 +2,19 @@
 # Meant to be symlinked at ~/.config/helix/config.toml for Linux/MacOS
 # or at %AppData%\helix\config.toml
 
-theme = "catppuccin_frappe"
+# theme = "catppuccin_frappe"
+# theme = "catppuccin_soft"
+# theme = "everforest_dark"
+theme = "gruvbox"
 
 [editor]
 # Change line numbers to relative in non-insert mode
 line-number = "relative"
 bufferline  = "always"
+
+# jump-label-alphabet = "fjdkslaghtyrueiwoqpbnvmcxz"
+# jump-label-alphabet = "asdfgzxcvbqwertjklhuiopymn"
+jump-label-alphabet = "asdfwerzxcvjkluiopmghtybn"
 
 rulers = [120]
 
@@ -24,6 +31,7 @@ end-of-line-diagnostics = "hint"
 
 [editor.statusline]
 left = [ "mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator", "separator", "version-control" ]
+center = ["file-type"]
 mode = { normal = "🏄 NORMAL", insert = "👉 INSERT", select = "🔍 SELECT" }
 separator = " "
 
@@ -32,37 +40,34 @@ separator = " "
 esc = ["collapse_selection", "keep_primary_selection"]
 
 # Unbind default movement keys and bind new ones
-h   = "no_op"
-j   = "no_op"
-k   = "move_char_left"
-l   = "move_line_down"
-";" = "move_line_up"
-"'" = "move_char_right"
+# h   = "no_op"
+# j   = "no_op"
+# k   = "move_char_left"
+# l   = "move_line_down"
+# ";" = "move_line_up"
+# "'" = "move_char_right"
 
-C-r   = ":reload"
-C-w   = ":buffer-close"
-"C-left" = "goto_previous_buffer"
+";" = "flip_selections"
+
+C-r       = ":reload"
+C-w       = ":buffer-close"
+"C-left"  = "goto_previous_buffer"
 "C-right" = "goto_next_buffer"
-"C-," = "goto_previous_buffer"
-"C-." = "goto_next_buffer"
+"C-,"     = "goto_previous_buffer"
+"C-."     = "goto_next_buffer"
 # Move line up/down using Control + arrow
-"C-up" = [
-  "extend_to_line_bounds",
-  "delete_selection",
-  "move_line_up",
-  "paste_before"
-]
+"C-down"  = "@ml\"mdj\"mP"
+"C-up"    = "@ml\"mdk\"mP"
 
-"C-down" = [
-  "extend_to_line_bounds",
-  "delete_selection",
-  "move_line_down",
-  "paste_before"
-]
+C-a = ":sh unibear add_file %{buffer_name}"
 
 # This overrides extend_to_line_bounds, see same for select mode
 x = "select_line_below"
 X = "select_line_above"
+
+Y = "yank_joined"
+
+ret = "@gw"
 
 [keys.normal.space]
 m = ":toggle-option soft-wrap.enable"
@@ -73,10 +78,10 @@ z = [
 ]
 
 # Only works in non-windows environments :(
-# Open current buffer in Yazi
-e     = ":open %sh{~/.config/helix/yazi-picker.sh '%{buffer_name}'}"
-# Open pwd in Yazi
-E   = ":open %sh{~/.config/helix/yazi-picker.sh}"
+e     = ":open %sh{~/.config/helix/scripts/yazi-picker.sh '%{buffer_name}'}"
+E     = ":open %sh{~/.config/helix/scripts/yazi-picker.sh}"
+t     = [":open %sh{~/.config/helix/scripts/fzf-picker.sh}", "extend_to_line_bounds"]
+T     = [":open %sh{~/.config/helix/scripts/fzf-picker-v2.sh}", "extend_to_line_bounds"]
 
 C-r   = ":config-reload"
 
@@ -85,10 +90,13 @@ a = ":sh git add -A"
 s = ":sh git status"
 c = ":sh git commit"
 b = ":echo %sh{git blame -L %{cursor_line},%{cursor_line} -- %{buffer_name}}"
-w = ":sh gh browse %{buffer_name}:%{cursor_line}"
+w = ":sh ~/.config/helix/scripts/open-gh.sh %{buffer_name} %{cursor_line}"
 
 g = ":sh zellij run -x 10%% -y 10%% --width 80%% --height 80%% --pinned true -fc -n 'lazygit -- q to quit' -- lazygit"
+r = ":reset-diff-change"
 
+[keys.normal.m]
+l = "extend_to_line_bounds"
 
 [keys.select]
 x = "select_line_below"

@@ -1,4 +1,5 @@
 use anyhow::bail;
+use clap::{Args, Parser};
 use colored::Colorize;
 use logger::Logger;
 use profile::Config;
@@ -7,7 +8,6 @@ use std::{
     path::PathBuf,
     process::{Command, Stdio},
 };
-use structopt::StructOpt;
 
 use crate::{profile::Profile, util::absolutize};
 
@@ -15,19 +15,28 @@ mod logger;
 mod profile;
 mod util;
 
-#[derive(Debug, StructOpt)]
-#[structopt(name = "Dotfiles", about = "Installs dotfiles using symlinks")]
-struct Opt {
+#[derive(Debug, Parser)]
+#[command(name = "Dotfiles", about = "Installs dotfiles using symlinks")]
+enum ProgArgs {
+    #[command(alias = "i")]
+    Install(InstallArgs),
+
+    #[commands(alias = "a")]
+    Adopt(AdoptArgs),
+}
+
+#[derive(Debug, Args)]
+struct InstallArgs {
     /// Run all validations and install the files. Omit to run in dryrun mode
-    #[structopt(short, long)]
-    install: bool,
+    #[arg(short, long)]
+    dryrun: bool,
 
     /// Enable verbose mode
-    #[structopt(short, long)]
+    #[arg(short, long)]
     verbose: bool,
 
     /// Profile to install
-    #[structopt(parse(from_os_str))]
+    #[arg()]
     profile: PathBuf,
 }
 
@@ -217,23 +226,28 @@ fn main() -> anyhow::Result<()> {
         .map(|()| log::set_max_level(log::LevelFilter::Info))
         .map_err(|e| anyhow::anyhow!(e))?;
 
-    let opt = Opt::from_args();
-    let dotfile_toml_path = opt.profile.join("dotfile.toml");
+    let opt = ProgArgs::parse();
 
-    log::info!("Parsing config {:?}", dotfile_toml_path);
+    match opt {
+        ProgArgs::Install(opt) => {
+            let dotfile_toml_path = opt.profile.join("dotfile.toml");
 
-    let dotfile_toml = fs::read_to_string(&dotfile_toml_path)?;
-    let profile: Profile = toml::from_str(&dotfile_toml)?;
+            log::info!("Parsing config {:?}", dotfile_toml_path);
 
-    if opt.verbose {
-        log::info!("Parsed profile: {profile:#?}");
+            let dotfile_toml = fs::read_to_string(&dotfile_toml_path)?;
+            let profile: Profile = toml::from_str(&dotfile_toml)?;
+
+            if opt.verbose {
+                log::info!("Parsed profile: {profile:#?}");
+            }
+
+            let links = validate(&opt.profile, &profile)?;
+
+            if !opt.dryrun {
+                install(&links)?;
+            }
+
+            Ok(())
+        }
     }
-
-    let links = validate(&opt.profile, &profile)?;
-
-    if opt.install {
-        install(&links)?;
-    }
-
-    Ok(())
 }

@@ -1,22 +1,26 @@
 #!/usr/bin/env bash
 
-FIFO="/tmp/yazi-fifo-$$"
-mkfifo "$FIFO"
+CHOOSER="/tmp/yazi-chooser-$$"
+cleanup() { rm -f "$CHOOSER"; }
+trap cleanup EXIT
 
-zellij run -n Yazi -ci -x 10% -y 10% --width 80% --height 80% -- \
-  bash -c "
-    # Open FIFO for reading and writing
-    exec 3<> '$FIFO'
-    if [ -n '$1' ]; then
-      yazi --chooser-file '$FIFO' '$1'
-    else
-      yazi --chooser-file '$FIFO'
-    fi
-    # Close the FIFO after yazi finishes
-    exec 3>&-
-  "
+YAZI_CMD="$(which yazi) --chooser-file '$CHOOSER'"
 
-if read -r line < "$FIFO"; then
+if [ -n "$1" ]; then
+  YAZI_CMD+=" '$1'"
+fi
+
+if [ -n "$CMUX_SOCKET_PATH" ]; then
+  : > "$CHOOSER"
+  cmux run --wait -- $YAZI_CMD
+elif [ -n "$ZELLIJ" ]; then
+  mkfifo "$CHOOSER"
+  zellij run -n Yazi -ci -x 10% -y 10% --width 80% --height 80% -- bash -c "exec 3<> '$CHOOSER'; $YAZI_CMD; exec 3>&-"
+else
+  $YAZI_CMD
+fi
+
+if read -r line < "$CHOOSER"; then
   echo "$line"
 else
   exit 1

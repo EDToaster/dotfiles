@@ -25,5 +25,5 @@ install_location = { windows = "$APPDATA\\helix\\themes\\everocean.toml", linux 
 [[configs]]
 name = "yazi-picker"
 path = "yazi-picker.sh"
-install_location = { windows = "$APPDATA\\helix\\yazi-picker.sh", linux = "~/.config/helix/yazi-picker.sh", macos = "~/.config/helix/yazi-picker.sh" }
+install_location = { windows = "$APPDATA\\helix\\scripts\\yazi-picker.sh", linux = "~/.config/helix/scripts/yazi-picker.sh", macos = "~/.config/helix/scripts/yazi-picker.sh" }
 
