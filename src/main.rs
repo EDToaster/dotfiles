@@ -20,9 +20,6 @@ mod util;
 enum ProgArgs {
     #[command(alias = "i")]
     Install(InstallArgs),
-
-    #[commands(alias = "a")]
-    Adopt(AdoptArgs),
 }
 
 #[derive(Debug, Args)]
