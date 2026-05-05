@@ -78,8 +78,8 @@ z = [
 ]
 
 # Only works in non-windows environments :(
-e     = ":open %sh{~/.config/helix/scripts/yazi-picker.sh '%{buffer_name}'}"
-E     = ":open %sh{~/.config/helix/scripts/yazi-picker.sh}"
+e     = [":open %sh{~/.config/helix/scripts/yazi-picker.sh '%{buffer_name}'}", ":redraw"]
+E     = [":open %sh{~/.config/helix/scripts/yazi-picker.sh}", ":redraw"]
 t     = [":open %sh{~/.config/helix/scripts/fzf-picker.sh}", "extend_to_line_bounds"]
 T     = [":open %sh{~/.config/helix/scripts/fzf-picker-v2.sh}", "extend_to_line_bounds"]
 

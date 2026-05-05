@@ -28,3 +28,8 @@ name = "yazi-picker"
 path = "yazi-picker.sh"
 install_location = { windows = "$APPDATA\\helix\\scripts\\yazi-picker.sh", linux = "~/.config/helix/scripts/yazi-picker.sh", macos = "~/.config/helix/scripts/yazi-picker.sh" }
 
+[[configs]]
+name = "popup"
+path = "popup.sh"
+install_location = { windows = "$APPDATA\\helix\\scripts\\popup.sh", linux = "~/.config/helix/scripts/popup.sh", macos = "~/.config/helix/scripts/popup.sh" }
+

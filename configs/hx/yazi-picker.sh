@@ -1,27 +1,14 @@
 #!/usr/bin/env bash
 
-OUTPUT="/tmp/yazi-chooser-$$"
-cleanup() { rm -f "$OUTPUT"; }
-trap cleanup EXIT
+. "${BASH_SOURCE%/*}/popup.sh"
 
-YAZI_CMD="$(which yazi) --chooser-file '$OUTPUT'"
-
-if [ -n "$1" ]; then
+YAZI_CMD="$(which yazi)"
+if [[ -n "$1" ]]; then
   YAZI_CMD+=" '$1'"
 fi
 
-if [ -n "$ZELLIJ" ]; then
-  mkfifo "$OUTPUT"
-  zellij run -n Yazi -ci -x 10% -y 10% --width 80% --height 80% -- bash -c "exec 3<> '$OUTPUT'; $YAZI_CMD; exec 3>&-"
-elif [ -n "$CMUX_SOCKET_PATH" ]; then
-  : > "$OUTPUT"
-  cmux run --wait -- $YAZI_CMD
-else
-  exit 1
-fi
+yazi_fn() {
+  printf "$YAZI_CMD --chooser-file '$1'"
+}
 
-if read -r line < "$OUTPUT"; then
-  echo "$line"
-else
-  exit 1
-fi
+popup yazi_fn
