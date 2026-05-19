@@ -6,27 +6,67 @@
     email  = howard3061@gmail.com
     name   = EDToaster
 
-[credential]
-    helper = store
+[http]
+	postBuffer = 524288000
+
+[mergetool]
+	keepBackup = false
 
 [core]
-    editor = hx
-    pager = delta
-
-[interactive]
-    diffFilter = delta --color-only
-
-[delta]
-    navigate = true    # use n and N to move between diff sections
-    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
-
-[merge]
-    conflictstyle = diff3
-
+	whitespace       = trailing-space,space-before-tab
+	editor           = hx
+	
 [diff]
+	mnemonicprefix = true
     colorMoved = default
 
-[alias]
-    dag    = log --graph --format='format:%c(yellow)%h%C(reset) %C(blue)\"%an\" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
-	cane   = commit --amend --no-edit
+[merge]
+    conflictstyle = zdiff3
 
+[pull]
+	rebase = true
+
+[push]
+	default         = simple
+	autoSetupRemote = true
+
+[merge]
+	stat = true
+
+[feature]
+	manyFiles = 1
+
+[pack]
+	windowMemory  = 256m
+	packSizeLimit = 256m
+
+[alias]
+    a = add
+	aa = add -A
+	aac = !git add -A && git commit
+	aacm = !git add -A && git commit -m
+
+	b = branch
+
+	c = commit
+	cm = "commit -m"
+    cane = "commit --amend --no-edit"
+
+	d = diff
+    dag    = log --graph --format='format:%c(yellow)%h%C(reset) %C(blue)"%an" <%ae>%C(reset) %C(magenta)%cr%C(reset)%C(auto)%d%C(reset)%n%s' --date-order
+	l = log
+
+	co = checkout
+	nb = "!f() { git checkout -b edtoaster/\"$1\"; }; f"
+
+	p = pull
+	s = status
+	r = rebase
+	sc = sparse-checkout
+	wt = worktree
+
+[init]
+	defaultBranch = main
+
+[include]
+	path = .gitconfig_overrides

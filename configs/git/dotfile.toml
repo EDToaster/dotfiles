@@ -20,4 +20,4 @@ path = ".gitconfig"
 [configs.install_location]
 windows = "~/.gitconfig"
 linux = "~/.gitconfig"
-macos = "~/.aws/config"
+macos = "~/.gitconfig"
