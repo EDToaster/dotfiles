@@ -1,0 +1,42 @@
+# dotfile-rs config for zsh config files
+
+name = "zsh"
+description = "zsh dotfile config"
+
+validation_commands = [
+  ["hx", "--version"], 
+  ["git", "--version"], 
+  ["fzf", "--version"], 
+]
+
+[[configs]]
+name = "aliases.zsh"
+path = "aliases.zsh"
+
+[configs.install_location]
+linux = "~/.zshrc.d/aliases.zsh"
+macos = "~/.zshrc.d/aliases.zsh"
+
+[[configs]]
+name = "edit-line.zsh"
+path = "edit-line.zsh"
+
+[configs.install_location]
+linux = "~/.zshrc.d/edit-line.zsh"
+macos = "~/.zshrc.d/edit-line.zsh"
+
+[[configs]]
+name = "edit-zshrc.zsh"
+path = "edit-zshrc.zsh"
+
+[configs.install_location]
+linux = "~/.zshrc.d/edit-zshrc.zsh"
+macos = "~/.zshrc.d/edit-zshrc.zsh"
+
+[[configs]]
+name = "fzf.zsh"
+path = "fzf.zsh"
+
+[configs.install_location]
+linux = "~/.zshrc.d/fzf.zsh"
+macos = "~/.zshrc.d/fzf.zsh"
