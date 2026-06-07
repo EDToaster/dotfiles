@@ -1,7 +1,15 @@
+_stat_zshrc_file() {
+  if [[ "$OSTYPE" == "darwin"* ]]; then
+    stat -f %m ~/.zshrc
+  else
+    stat -c %Y ~/.zshrc
+  fi 
+}
+
 zshrc() {
-  BEFORE=$(stat -f %m ~/.zshrc)
+  BEFORE=$(_stat_zshrc_file)
   $EDITOR ~/.zshrc
-  AFTER=$(stat -f %m ~/.zshrc)
+  AFTER=$(_stat_zshrc_file)
   if [[ "$BEFORE" -lt "$AFTER" ]]; then
     source ~/.zshrc
   else

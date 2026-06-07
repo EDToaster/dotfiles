@@ -8,6 +8,7 @@
 theme = "gruvbox"
 
 [editor]
+mouse = true
 # Change line numbers to relative in non-insert mode
 line-number = "relative"
 bufferline  = "always"
