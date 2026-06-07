@@ -1,0 +1,47 @@
+# dotfile-rs config for waybar (Hyprland, HANCORE/Omarchy-inspired style)
+
+name = "waybar"
+description = "waybar dotfile config (cava, mpris, calendar, weather, netspeed, temp, disk, mem)"
+
+# Hard dependencies: a missing one (or non-zero exit) aborts the install.
+# Only side-effect-free checks here. lvsk-calendar opens its GUI on
+# --help/--version, so we probe it with `command -v` instead.
+validation_commands = [
+  ["waybar", "--version"],
+  ["cava", "-v"],
+  ["wttrbar", "--help"],
+  ["bc", "--version"],
+  ["playerctl", "--version"],
+  ["sh", "-c", "command -v lvsk-calendar-launcher"],
+]
+
+# Soft dependencies: only used by click actions / nice-to-haves, so a
+# missing one just warns instead of blocking the install.
+optional_validation_commands = [
+  ["ghostty", "--version"],                                  # terminal for btop click-throughs
+  ["btop", "--version"],                                     # system monitor opened on click
+  ["pavucontrol", "--version"],                              # volume click
+  ["sh", "-c", "command -v notify-send"],                    # weather click notification
+  ["curl", "--version"],                                     # weather click
+  ["sh", "-c", "fc-list | grep -qi 'meslolgs nerd font'"],   # bar font (icons render correctly)
+]
+
+[[configs]]
+name = "main waybar config"
+path = "config.jsonc"
+install_location = { linux = "~/.config/waybar/config.jsonc" }
+
+[[configs]]
+name = "waybar style"
+path = "style.css"
+install_location = { linux = "~/.config/waybar/style.css" }
+
+[[configs]]
+name = "cava visualizer script"
+path = "cava.sh"
+install_location = { linux = "~/.config/waybar/cava.sh" }
+
+[[configs]]
+name = "network speed script"
+path = "net_speed.sh"
+install_location = { linux = "~/.config/waybar/net_speed.sh" }

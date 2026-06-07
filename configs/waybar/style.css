@@ -1,124 +1,165 @@
+/* ───────────────────────────────────────────────────────────────
+   Waybar style — HANCORE/Omarchy-inspired, self-contained.
+   No external theme import: the palette is defined right here so
+   it works without Omarchy. Tweak @rd1 to re-tint the whole bar.
+   ─────────────────────────────────────────────────────────────── */
+
+@define-color fg       #cdd6f4;  /* default text          */
+@define-color rd1      #ff9b71;  /* coral accent          */
+@define-color dark-bg  #11111b;  /* module background     */
+@define-color hover-bg #313244;  /* hover background      */
+
 * {
-    border: none;
-    border-radius: 0;
-    font-family: JetBrainsMono Nerd Font;
-    font-size: 14px;
-    min-height: 0;
+  font-family: 'MesloLGS Nerd Font Propo', 'JetBrainsMono Nerd Font Propo', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  min-height: 0;
+}
+
+tooltip {
+  background: @dark-bg;
+  border-radius: 15px;
+  border: 1px solid @rd1;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 5px;
 }
 
 window#waybar {
-    background: transparent;
-    color: white;
+  background-color: transparent;
+  transition-property: background-color;
+  transition-duration: .5s;
+  margin: 10px;
+}
+
+window#waybar.hidden {
+  opacity: 0.2;
+}
+
+.modules-left,
+.modules-center,
+.modules-right {
+  background: transparent;
+  margin: 5px;
 }
 
 #workspaces {
-	background-color: #24283b;
-	margin: 5px;
-	margin-left: 10px;
-	border-radius: 5px;
-}
-#workspaces button {
-    padding: 5px 10px;
-    color: #c0caf5;
+  background-color: @dark-bg;
+  margin: 2px 4px;
+  padding: 0 5px;
+  border-radius: 20px;
+  opacity: 0.9;
 }
 
-#workspaces button.active {
-    color: #24283b;
-    background-color: #7aa2f7;
-    border-radius: 5px;
+#workspaces button {
+  color: @fg;
+  background-color: transparent;
+  margin: 4px 2px;
+  padding: 0 5px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
 }
 
 #workspaces button:hover {
-	background-color: #7dcfff;
-	color: #24283b;
-	border-radius: 5px;
+  background-color: @hover-bg;
+  color: @fg;
 }
 
-#custom-date, #clock, #battery, #pulseaudio, #network {
-	background-color: #24283b;
-	padding: 5px 10px;
-	margin: 5px 0px;
+#workspaces button.active {
+  background-color: @rd1;
+  color: @dark-bg;
+  min-width: 30px;
 }
 
-#custom-date {
-	color: #7dcfff;
+#workspaces button.urgent {
+  color: #ff0000;
+  background-color: #f9e2af;
 }
 
-#custom-power {
-	color: #24283b;
-	background-color: #db4b4b;
-	border-radius: 5px;
-	margin-right: 10px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	margin-left: 0px;
-	padding: 5px 10px;
+#workspaces button.empty {
+  color: #6c7086;
 }
 
-#tray {
-    background-color: #24283b;
-    border-radius: 0px 5px 5px 0px;
-    margin-right: 10px;
-    margin: 5px;
-    margin-left: -15px;
-    border-radius: 5px;
-    padding: 0px 5px;
+#tray,
+#window,
+#cava,
+#mpris,
+#memory,
+#temperature,
+#pulseaudio,
+#custom-weather,
+#custom-calendar,
+#custom-netspeed,
+#clock,
+#disk {
+  background-color: @dark-bg;
+  color: @fg;
+  margin: 2px;
+  padding: 2px 15px;
+  border-radius: 20px;
+  opacity: 0.9;
+}
+
+#window {
+  margin: 2px 4px;
 }
 
 #clock {
-    color: #b48ead;
-    border-radius: 0px 5px 5px 0px;
-    margin-right: 10px;
+  font-weight: 800;
 }
 
-
-#battery {
-    color: #9ece6a;
+#cava {
+  color: @rd1;
+  padding: 0 12px;
 }
 
-#battery.charging {
-    color: #9ece6a;
+#custom-calendar {
+  padding: 0 12px;
 }
 
-#battery.warning:not(.charging) {
-    background-color: #f7768e;
-    color: #24283b;
-    border-radius: 5px 5px 5px 5px;
+/* Hover: lift the background and tint the glyph with the accent. */
+#memory:hover,
+#temperature:hover,
+#pulseaudio:hover,
+#clock:hover,
+#custom-weather:hover,
+#custom-calendar:hover,
+#custom-netspeed:hover,
+#disk:hover,
+#mpris:hover {
+  background-color: @hover-bg;
+  color: @rd1;
 }
 
-#backlight {
-    background-color: #24283b;
-    color: #db4b4b;
-    border-radius: 0px 0px 0px 0px;
-    margin: 5px;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0px 0px;
+#mpris {
+  min-width: 200px;
 }
 
-#network {
-    color: #f7768e;
-    border-radius: 5px 0px 0px 5px;
-    margin-right: 0px;
+#disk.warning {
+  color: #f9e2af;
 }
 
-#pulseaudio {
-    color: #e0af68;
-    border-radius: 5px 0px 0px 5px;
-    margin-left: -2px;
+#disk.critical {
+  color: #f38ba8;
+  animation-name: blink;
+  animation-duration: 0.5s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
 }
 
-#pulseaudio.muted {
-    background-color: #e0af68;
-    color: #24283b;
-    border-radius: 5px 5px 5px 5px;
-    margin-left: -2px;
+#temperature.critical {
+  color: #f38ba8;
+  background-color: rgba(243, 139, 168, 0.2);
 }
 
-#custom-playerctl {
-	background-color: #24283b;
-	padding-left: 10px;
-  padding-right: 10px;
-	border-radius: 5px;
-  margin-top: 5px;
+@keyframes blink {
+  to {
+    background-color: @fg;
+    color: #f38ba8;
+  }
 }

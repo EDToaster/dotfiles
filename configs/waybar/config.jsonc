@@ -1,0 +1,179 @@
+{
+  // ─────────────────────────────────────────────────────────────
+  // Waybar config — HANCORE/Omarchy-inspired style, self-contained.
+  // Built for Hyprland. Requested modules:
+  //   cava · mpris · calendar · weather (wttrbar) · netspeed (bc)
+  //   temperature · disk · memory
+  // ─────────────────────────────────────────────────────────────
+  "layer": "top",
+  "position": "top",
+  "spacing": 0,
+  "reload_style_on_change": true,
+
+  "modules-left": [
+    "hyprland/workspaces",
+    "hyprland/window",
+    "custom/cava",
+    "mpris"
+  ],
+  "modules-center": [
+    "clock",
+    "custom/calendar",
+    "custom/weather",
+    "custom/netspeed"
+  ],
+  "modules-right": [
+    "tray",
+    "temperature",
+    "memory",
+    "disk",
+    "pulseaudio"
+  ],
+
+  // ── Left ──────────────────────────────────────────────────────
+  "hyprland/workspaces": {
+    "on-click": "activate",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1",
+    "format": "{icon}",
+    "format-icons": {
+      "1": "1",
+      "2": "2",
+      "3": "3",
+      "4": "4",
+      "5": "5",
+      "6": "6",
+      "7": "7",
+      "8": "8",
+      "9": "9",
+      "10": "10"
+    },
+    "persistent-workspaces": {
+      "1": [],
+      "2": [],
+      "3": [],
+      "4": [],
+      "5": []
+    }
+  },
+  "hyprland/window": {
+    "format": "<span weight='bold'>{class}</span>",
+    "max-length": 28,
+    "icon": true,
+    "icon-size": 14,
+    "separate-outputs": true
+  },
+  "custom/cava": {
+    "format": "{}",
+    "exec": "~/.config/waybar/cava.sh"
+  },
+  "mpris": {
+    "format": "{status_icon} {artist} - {title}",
+    "format-paused": "{status_icon} {artist} - {title}",
+    "format-stopped": "{status_icon}",
+    "format-disconnected": "",
+    "player-icons": {
+      "default": "",
+      "mpv": "",
+      "spotify": "",
+      "firefox": "",
+      "chromium": "",
+      "brave": ""
+    },
+    "status-icons": {
+      "playing": "▶",
+      "paused": "⏸",
+      "stopped": "⏹"
+    },
+    "tooltip-format": "{title}\n{artist} - {album}\n{position}/{length}",
+    "tooltip-format-paused": "{title}\n{artist} - {album}\nPaused",
+    "on-click": "playerctl play-pause",
+    "on-click-right": "playerctl stop",
+    "on-scroll-up": "playerctl next",
+    "on-scroll-down": "playerctl previous",
+    "max-length": 32
+  },
+
+  // ── Center ────────────────────────────────────────────────────
+  "clock": {
+    "format": "{:%a %H:%M}",
+    "format-alt": "{:%d %B W%V %Y}",
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "format": {
+        "today": "<span color='#ff9b71'><b>{}</b></span>"
+      }
+    }
+  },
+  "custom/calendar": {
+    "format": "󰃭",
+    "on-click": "lvsk-calendar-launcher",
+    "tooltip-format": "Open calendar"
+  },
+  "custom/weather": {
+    "format": "{}",
+    "tooltip": true,
+    "interval": 600,
+    "exec": "wttrbar --nerd",
+    "return-type": "json",
+    "on-click": "curl -s 'wttr.in?format=3' | xargs -I {} notify-send 'Weather' {}"
+  },
+  "custom/netspeed": {
+    "exec": "~/.config/waybar/net_speed.sh",
+    "interval": 2,
+    "format": "{}",
+    "tooltip-format": "Network throughput on the default route",
+    "on-click": "ghostty -e btop"
+  },
+
+  // ── Right ─────────────────────────────────────────────────────
+  "tray": {
+    "icon-size": 13,
+    "spacing": 12
+  },
+  "temperature": {
+    // AMD k10temp Tctl, addressed via a reboot-stable PCI hwmon path
+    // (this box has no thermal_zone* entries to use instead).
+    "hwmon-path-abs": "/sys/devices/pci0000:00/0000:00:18.3/hwmon",
+    "input-filename": "temp1_input",
+    "format": "{temperatureC}°C {icon}",
+    "format-critical": "{temperatureC}°C ",
+    "critical-threshold": 85,
+    "format-icons": ["", "", "", "", ""],
+    "tooltip-format": "CPU temperature: {temperatureC}°C",
+    "on-click": "ghostty -e btop",
+    "interval": 5
+  },
+  "memory": {
+    "interval": 5,
+    "format": "{percentage}% ",
+    "tooltip-format": "RAM: {used:0.1f}G / {total:0.1f}G ({percentage}%)\nSwap: {swapUsed:0.1f}G / {swapTotal:0.1f}G",
+    "on-click": "ghostty -e btop"
+  },
+  "disk": {
+    "interval": 30,
+    "path": "/",
+    "format": "{percentage_used}% 󰋊",
+    "format-warning": "{percentage_used}% 󰋊",
+    "format-critical": "{percentage_used}% 󰋊",
+    "states": {
+      "warning": 80,
+      "critical": 90
+    },
+    "tooltip-format": "Disk /: {used} / {total} ({percentage_used}%)\nFree: {free}",
+    "on-click": "ghostty -e btop"
+  },
+  "pulseaudio": {
+    "format": "{volume}% {icon}",
+    "format-muted": "{volume}% 󰝟",
+    "format-icons": {
+      "headphone": "",
+      "default": ["", "", ""]
+    },
+    "scroll-step": 5,
+    "on-click": "pavucontrol",
+    "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "tooltip-format": "{volume}% — {desc}"
+  }
+}
