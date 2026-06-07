@@ -1,0 +1,29 @@
+# dotfile-rs config for Hyprland
+
+name = "hypr"
+description = "Hyprland dotfile config"
+
+# Hard dependencies: session-critical pieces this config autostarts
+# (exec-once) or binds to. Probed with `command -v` so we never launch
+# a daemon/GUI (hyprpaper/hyprlauncher would otherwise start), and
+# because `hyprctl --version` exits non-zero.
+validation_commands = [
+  ["sh", "-c", "command -v Hyprland"],
+  ["sh", "-c", "command -v waybar"],
+  ["sh", "-c", "command -v hyprpaper"],
+  ["sh", "-c", "command -v hyprlauncher"],
+]
+
+# Soft dependencies: keybind / click helpers. Missing ones only warn.
+optional_validation_commands = [
+  ["sh", "-c", "test -x ~/.local/bin/toastty"],  # $terminal
+  ["sh", "-c", "command -v dolphin"],            # $fileManager
+  ["sh", "-c", "command -v wpctl"],              # XF86Audio* volume keys (wireplumber)
+  ["sh", "-c", "command -v playerctl"],          # XF86Audio* media keys
+  ["sh", "-c", "command -v brightnessctl"],      # XF86MonBrightness* keys (laptop only)
+]
+
+[[configs]]
+name = "main hyprland config"
+path = "hyprland.conf"
+install_location = { linux = "~/.config/hypr/hyprland.conf" }
