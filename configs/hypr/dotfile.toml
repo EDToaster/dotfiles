@@ -27,3 +27,8 @@ optional_validation_commands = [
 name = "main hyprland config"
 path = "hyprland.conf"
 install_location = { linux = "~/.config/hypr/hyprland.conf" }
+
+[[configs]]
+name = "hyprtoolkit theme"
+path = "hyprtoolkit.conf"
+install_location = { linux = "~/.config/hypr/hyprtoolkit.conf" }

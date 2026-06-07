@@ -119,13 +119,13 @@
     "return-type": "json",
     "on-click": "curl -s 'wttr.in?format=3' | xargs -I {} notify-send 'Weather' {}"
   },
-  "custom/netspeed": {
-    "exec": "~/.config/waybar/net_speed.sh",
-    "interval": 2,
-    "format": "{}",
-    "tooltip-format": "Network throughput on the default route",
-    "on-click": "ghostty -e btop"
-  },
+  // "custom/netspeed": {
+  //   "exec": "~/.config/waybar/net_speed.sh",
+  //   "interval": 2,
+  //   "format": "{}",
+  //   "tooltip-format": "Network throughput on the default route",
+  //   "on-click": "ghostty -e btop"
+  // },
 
   // ── Right ─────────────────────────────────────────────────────
   "tray": {
@@ -172,7 +172,7 @@
       "default": ["", "", ""]
     },
     "scroll-step": 5,
-    "on-click": "pavucontrol",
+    "on-click": "pkill -x pavucontrol || pavucontrol",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "tooltip-format": "{volume}% — {desc}"
   }

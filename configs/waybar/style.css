@@ -61,7 +61,9 @@ window#waybar.hidden {
   margin: 4px 2px;
   padding: 0 5px;
   border-radius: 20px;
-  transition: all 0.3s ease;
+  /* Animate only color, not layout (min-width/padding) — animating width
+     makes the auto-sized #workspaces container bounce on workspace switch. */
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #workspaces button:hover {
