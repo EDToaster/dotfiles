@@ -23,6 +23,13 @@ popup() {
   else
     : > "$output"
     eval "$cmd"
+    # yazi ran nested inside helix's alternate screen and emitted its own
+    # `CSI ?1049l` on exit, flipping the terminal back to the primary screen
+    # while helix is still alive on the alt screen. Helix's `:redraw` then
+    # paints onto the primary buffer and never gets cleared when helix quits.
+    # Re-enter the alt screen here (to the tty, not stdout — stdout is the
+    # chosen-file path helix reads) so `:redraw` lands back on the alt screen.
+    printf '\e[?1049h' > /dev/tty
   fi
   
   if read -r line < "$output" || [ -n "$line" ]; then
