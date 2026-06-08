@@ -45,3 +45,8 @@ install_location = { linux = "~/.config/waybar/cava.sh" }
 name = "network speed script"
 path = "net_speed.sh"
 install_location = { linux = "~/.config/waybar/net_speed.sh" }
+
+[[configs]]
+name = "pavucontrol toggle + close-on-blur script"
+path = "pavucontrol-toggle.sh"
+install_location = { linux = "~/.config/waybar/pavucontrol-toggle.sh" }

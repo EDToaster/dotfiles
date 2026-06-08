@@ -57,7 +57,7 @@
     }
   },
   "hyprland/window": {
-    "format": "<span weight='bold'>{class}</span>",
+    "format": "<span weight='bold'>{initialTitle}</span>",
     "max-length": 28,
     "icon": true,
     "icon-size": 14,
@@ -172,7 +172,7 @@
       "default": ["", "", ""]
     },
     "scroll-step": 5,
-    "on-click": "pkill -x pavucontrol || pavucontrol",
+    "on-click": "~/.config/waybar/pavucontrol-toggle.sh",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "tooltip-format": "{volume}% — {desc}"
   }

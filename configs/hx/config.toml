@@ -5,7 +5,7 @@
 # theme = "catppuccin_frappe"
 # theme = "catppuccin_soft"
 # theme = "everforest_dark"
-theme = "gruvbox"
+theme = "gruvbox_transparent"
 
 [editor]
 mouse = true
