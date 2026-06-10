@@ -47,6 +47,11 @@ path = "cava-braille.sh"
 install_location = { linux = "~/.config/waybar/cava-braille.sh" }
 
 [[configs]]
+name = "cava braille visualizer script (hires)"
+path = "cava-braille-hires.sh"
+install_location = { linux = "~/.config/waybar/cava-braille-hires.sh" }
+
+[[configs]]
 name = "network speed script"
 path = "net_speed.sh"
 install_location = { linux = "~/.config/waybar/net_speed.sh" }

@@ -1,0 +1,23 @@
+# dotfile-rs config for mako (notification daemon, Waybar/Hyprland-matched theme)
+
+name = "mako"
+description = "mako notification theme (Catppuccin-Mocha base + coral accent, matches waybar/hypr)"
+
+# Hard dependency: the daemon itself. Probed with `command -v` (not
+# `mako --version`) so validation never accidentally launches the daemon
+# — same reasoning as the hypr config's daemon checks.
+validation_commands = [
+  ["sh", "-c", "command -v mako"],
+]
+
+# Soft deps: nice-to-haves for testing / interacting with notifications.
+optional_validation_commands = [
+  ["sh", "-c", "command -v makoctl"],                        # reload / mode toggle
+  ["sh", "-c", "command -v notify-send"],                    # fire a test notification
+  ["sh", "-c", "fc-list | grep -qi 'meslolgs nerd font'"],   # notification font
+]
+
+[[configs]]
+name = "mako theme"
+path = "config"
+install_location = { linux = "~/.config/mako/config" }

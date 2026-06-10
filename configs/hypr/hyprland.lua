@@ -34,25 +34,61 @@ local function dp1_1080p()
     hl.monitor({ output = DP1, mode = "1920x1080@330.12", position = "800x384", scale = 1 })
 end
 
--- Pick the profile from DP-1's *current* negotiated mode. In 1080p hardware
--- mode the panel only advertises <=1080p, so height > 1080 uniquely means the
--- button is on the 4K setting.
-local function sync_dp1()
+-- Desktop notification via mako (notify-send -> org.freedesktop.Notifications).
+-- The x-canonical-private-synchronous hint makes mako *replace* the previous
+-- popup instead of stacking when you toggle modes back and forth.
+local function notify_mode(is4k)
+    local body = is4k and "DP-1: 3840x2160 @ 165 Hz" or "DP-1: 1920x1080 @ 330 Hz"
+    hl.exec_cmd(
+        "notify-send -a Hyprland -t 4000 " ..
+        "-h string:x-canonical-private-synchronous:dp1-mode " ..
+        "'Monitor mode switched' '" .. body .. "'")
+end
+
+-- True when DP-1 is on the 4K hardware setting. We read the kernel's current
+-- EDID mode list from sysfs rather than the Lua monitor's width/height: those
+-- just echo whatever mode we last *forced*, so once 4K is applied they stay
+-- 2160 even after the panel drops to 1080p (the detection would be circular).
+-- sysfs is the hardware truth -- in 1080p mode the panel stops advertising any
+-- 3840x2160 mode. The glob covers card0/card1/etc. `cat` is safe to call here;
+-- only `hyprctl` would deadlock (it needs the main thread this callback blocks).
+local function dp1_is_4k()
+    local h = io.popen("cat /sys/class/drm/*-DP-1/modes 2>/dev/null")
+    if not h then return nil end
+    local modes = h:read("*a") or ""
+    h:close()
+    if modes == "" then return nil end  -- couldn't read; signal "unknown"
+    return modes:find("3840x2160", 1, true) ~= nil
+end
+
+-- Apply the profile matching DP-1's current hardware mode. `hotplug` is true
+-- only when called from the monitor.added event (the actual button press);
+-- reload and boot call sync_dp1() with no arg, so they re-apply silently.
+local function sync_dp1(hotplug)
     local m = hl.get_monitor(DP1)
     if not m then return end
     -- Bail unless this really is our LG UltraGear+ (serial match).
     if not (m.description and m.description:find(DP1_SERIAL, 1, true)) then return end
-    if m.height > 1080 then
+    local is4k = dp1_is_4k()
+    if is4k == nil then return end  -- detection failed; leave the monitor as-is
+    if is4k then
         dp1_4k()
     else
         dp1_1080p()
+    end
+    if hotplug then
+        notify_mode(is4k)
+        -- waybar doesn't re-anchor when the output geometry changes underneath
+        -- it (it floats mid-screen), so restart it. The sleep lets the new mode
+        -- settle before the fresh waybar reads the output layout.
+        hl.exec_cmd("killall waybar; sleep 0.3; waybar")
     end
 end
 
 -- Fires on every reconnect, including the monitor's mode button. Debounce so
 -- the new mode has finished negotiating before we read it back.
 hl.on("monitor.added", function()
-    hl.timer(sync_dp1, { timeout = 300, type = "oneshot" })
+    hl.timer(function() sync_dp1(true) end, { timeout = 300, type = "oneshot" })
 end)
 
 -- Apply on every config load too. `hyprctl reload` re-runs this file but does
@@ -267,6 +303,8 @@ hl.bind(mainMod .. " + E", hl.dsp.exec_cmd(fileManager))
 hl.bind(mainMod .. " + V", hl.dsp.window.float({ action = "toggle" }))
 hl.bind(mainMod .. " + P", hl.dsp.window.pseudo())          -- dwindle
 hl.bind(mainMod .. " + J", hl.dsp.layout("togglesplit"))    -- dwindle
+hl.bind(mainMod .. " + SHIFT + P", hl.dsp.exec_cmd("grimblast copysave area -n"))
+hl.bind(mainMod .. " + SUPER + P", hl.dsp.exec_cmd("grimblast copysave output -n"))
 
 -- Move focus with mainMod + arrow keys
 hl.bind(mainMod .. " + left",  hl.dsp.focus({ direction = "left" }))
@@ -356,3 +394,6 @@ hl.window_rule({
     size  = { 460, 620 },
     move  = "monitor_w-472 50",
 })
+
+-- hyprmon: managed monitor profile include
+-- require("hyprmon")

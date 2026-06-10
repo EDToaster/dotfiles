@@ -1,0 +1,64 @@
+# Mako notification theme — matched to the Waybar + Hyprland look.
+#
+# Shared visual language pulled from waybar/style.css and hypr/*:
+#   • coral accent  #ff9b71  (waybar @accent, hypr active-border start,
+#                             hyprtoolkit accent)
+#   • coral→red gradient motif: the Hyprland active border runs
+#     #ff9b71 → #e04848. Mako can't gradient a border, so we map the two
+#     ends onto urgency: normal = coral, critical = red (#f38ba8, the
+#     same red waybar uses for .critical).
+#   • dark base     #11111b @ ~90% opacity (waybar modules: opacity 0.9)
+#   • text          #cdd6f4  (waybar @fg)
+#   • muted/inactive #313244 (waybar @muted) / #595959 (hypr inactive)
+#   • MesloLGS Nerd Font Propo, rounded corners, slight translucency.
+
+# --- type ---
+font=MesloLGS Nerd Font Propo 11
+
+# --- shape & layout ---
+width=380
+height=160
+margin=10
+padding=14,16
+border-size=2
+border-radius=12
+icons=1
+max-icon-size=48
+icon-location=left
+markup=1
+actions=1
+format=<b>%s</b>\n%b
+
+# --- colors (dark base at ~0.9 alpha, like the Waybar modules) ---
+background-color=#11111be6
+text-color=#cdd6f4
+border-color=#ff9b71
+progress-color=over #313244
+
+# --- behaviour ---
+default-timeout=5000
+anchor=top-right
+layer=top
+
+# Low urgency: muted border + dimmer text, quicker dismiss. Echoes the
+# unfocused-border greys (#313244 / #595959) from waybar/hypr.
+[urgency=low]
+border-color=#313244
+text-color=#a6adc8
+default-timeout=3000
+
+# Normal urgency: the coral signature accent.
+[urgency=normal]
+border-color=#ff9b71
+default-timeout=5000
+
+# Critical: the red end of the Hyprland coral→red border gradient,
+# matched to waybar's .critical colour. Never auto-dismiss.
+[urgency=critical]
+border-color=#f38ba8
+text-color=#f38ba8
+default-timeout=0
+
+# Do-not-disturb (toggle with: makoctl mode -t do-not-disturb).
+[mode=do-not-disturb]
+invisible=1

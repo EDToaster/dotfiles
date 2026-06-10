@@ -64,9 +64,14 @@
     "separate-outputs": true
   },
   "custom/cava": {
-    "format": "<span color='#313244'>|</span>{}<span color='#313244'>|</span>",
-    "exec": "~/.config/waybar/cava-braille.sh"
+    "format": "{}",
+    "exec": "~/.config/waybar/cava-braille-hires.sh",
+    "return-type": "json"
   },
+  // "custom/cava": {
+  //   "format": "<span color='#313244'>|</span>{}<span color='#313244'>|</span>",
+  //   "exec": "~/.config/waybar/cava-braille.sh"
+  // },
   "mpris": {
     "format": "{player_icon} {status_icon} {title}",
     "format-paused": "{player_icon} {status_icon} {title}",

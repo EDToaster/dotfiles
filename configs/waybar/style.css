@@ -119,6 +119,7 @@ window#waybar.empty #window {
 #custom-cava {
   color: @accent;
   padding: 0 12px;
+  font-size: 10px;
 }
 
 #custom-calendar {
