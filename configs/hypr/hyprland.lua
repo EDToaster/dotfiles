@@ -10,8 +10,56 @@
 ------------------
 
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
+
+-- DP-2 (ASUS VG259QM) is fixed.
 hl.monitor({ output = "DP-2", mode = "1920x1080@239.76", position = "-1120x384", scale = 1 })
-hl.monitor({ output = "DP-1", mode = "3840x2160@165.06", position = "800x128",   scale = 1.25 })
+
+-- DP-1 (LG UltraGear+) has a hardware button that toggles the panel between
+-- 4K@165 and 1080p@330. Each toggle re-plugs the monitor (disconnect +
+-- reconnect), so we detect the negotiated mode on `monitor.added` and apply
+-- the matching profile. This replaces the two HyprMon profiles
+-- (Main = 4K, Gaming = 1080p) with no external listener.
+local DP1 = "DP-1"
+
+-- Guard: only auto-switch *this* panel. Hyprland's Lua `description` field is
+-- "<make> <model> <serial>", so matching the serial ignores any other monitor
+-- that might ever land on the DP-1 connector.
+local DP1_SERIAL = "509NTJJSE892"  -- LG UltraGear+
+
+local function dp1_4k()
+    hl.monitor({ output = DP1, mode = "3840x2160@165.06", position = "800x128", scale = 1.25 })
+end
+
+local function dp1_1080p()
+    hl.monitor({ output = DP1, mode = "1920x1080@330.12", position = "800x384", scale = 1 })
+end
+
+-- Pick the profile from DP-1's *current* negotiated mode. In 1080p hardware
+-- mode the panel only advertises <=1080p, so height > 1080 uniquely means the
+-- button is on the 4K setting.
+local function sync_dp1()
+    local m = hl.get_monitor(DP1)
+    if not m then return end
+    -- Bail unless this really is our LG UltraGear+ (serial match).
+    if not (m.description and m.description:find(DP1_SERIAL, 1, true)) then return end
+    if m.height > 1080 then
+        dp1_4k()
+    else
+        dp1_1080p()
+    end
+end
+
+-- Fires on every reconnect, including the monitor's mode button. Debounce so
+-- the new mode has finished negotiating before we read it back.
+hl.on("monitor.added", function()
+    hl.timer(sync_dp1, { timeout = 300, type = "oneshot" })
+end)
+
+-- Apply on every config load too. `hyprctl reload` re-runs this file but does
+-- NOT re-fire monitor.added, so this top-level call keeps reloads correct.
+-- (At first boot the monitor may not exist yet -> sync_dp1 no-ops and the
+-- monitor.added handler above applies it once DP-1 appears.)
+sync_dp1()
 
 
 ---------------------
@@ -31,6 +79,7 @@ local menu        = "hyprlauncher"
 -- See https://wiki.hypr.land/Configuring/Basics/Autostart/
 -- exec_cmd spawns asynchronously, so no `& disown` is needed.
 hl.on("hyprland.start", function()
+    sync_dp1()  -- apply the right DP-1 profile for whatever mode it booted in
     hl.exec_cmd("waybar")
     hl.exec_cmd("hyprpaper")
     hl.exec_cmd("hyprlauncher -d")
@@ -307,6 +356,3 @@ hl.window_rule({
     size  = { 460, 620 },
     move  = "monitor_w-472 50",
 })
-
--- hyprmon: managed monitor profile include
-require("hyprmon")
