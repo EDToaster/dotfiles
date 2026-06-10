@@ -15,7 +15,7 @@ bars=(" " ⡀ ⣀ ⣄ ⣤ ⣦ ⣶ ⣷ ⣿)
 config_file="/tmp/waybar_cava_config"
 cat > "$config_file" <<EOF
 [general]
-bars = 10
+bars = 15
 framerate = 30
 autosens = 1
 

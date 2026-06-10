@@ -50,7 +50,7 @@ window#waybar.hidden {
 #workspaces button {
   color: @fg;
   background-color: transparent;
-  margin: 4px 2px;
+  margin: 2px;
   padding: 0 5px;
   border-radius: 20px;
   /* Animate only color, not layout (min-width/padding) — animating width
@@ -66,7 +66,6 @@ window#waybar.hidden {
 #workspaces button.active {
   background-color: @accent;
   color: @dark-bg;
-  min-width: 30px;
 }
 
 #workspaces button.urgent {
@@ -99,6 +98,10 @@ window#waybar.hidden {
   border-radius: 20px;
   opacity: 0.9;
   border: 1px solid @muted;
+}
+
+#workspaces {
+  padding: 2px;
 }
 
 #window {

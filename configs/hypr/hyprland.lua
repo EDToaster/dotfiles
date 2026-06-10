@@ -307,3 +307,6 @@ hl.window_rule({
     size  = { 460, 620 },
     move  = "monitor_w-472 50",
 })
+
+-- hyprmon: managed monitor profile include
+require("hyprmon")
