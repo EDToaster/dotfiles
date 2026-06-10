@@ -29,7 +29,13 @@ popup() {
     # paints onto the primary buffer and never gets cleared when helix quits.
     # Re-enter the alt screen here (to the tty, not stdout — stdout is the
     # chosen-file path helix reads) so `:redraw` lands back on the alt screen.
-    printf '\e[?1049h' > /dev/tty
+    #
+    # yazi also emitted crossterm's `DisableMouseCapture`
+    # (`CSI ?1006l ?1015l ?1003l ?1002l ?1000l`) on exit, turning off the mouse
+    # tracking modes helix enabled at startup. Helix never re-enables them, so
+    # the mouse goes dead. Re-emit crossterm's `EnableMouseCapture` sequences so
+    # mouse reporting is restored for helix.
+    printf '\e[?1049h\e[?1000h\e[?1002h\e[?1003h\e[?1015h\e[?1006h' > /dev/tty
   fi
   
   if read -r line < "$output" || [ -n "$line" ]; then

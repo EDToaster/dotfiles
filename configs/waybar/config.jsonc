@@ -6,31 +6,31 @@
   //   temperature · disk · memory
   // ─────────────────────────────────────────────────────────────
   "layer": "top",
-  "position": "top",
+  "position": "bottom",
   "spacing": 0,
   "reload_style_on_change": true,
 
   "modules-left": [
     "hyprland/workspaces",
-    "hyprland/window",
-    "custom/cava",
-    "mpris"
+    "mpris",
+    "custom/cava"   // TEMP: disabled to test tooltip fix (cava's 30fps redraw breaks tooltips)
   ],
   "modules-center": [
-    "clock",
-    "custom/calendar",
-    "custom/weather",
-    "custom/netspeed"
+    "hyprland/window"
+    // "custom/calendar",
+    // "custom/netspeed"
   ],
   "modules-right": [
     "tray",
-    "temperature",
-    "memory",
-    "disk",
-    "pulseaudio"
+    "custom/updates",
+    // "temperature",
+    // "memory",
+    // "disk",
+    "pulseaudio",
+    "custom/weather",
+    "clock"
   ],
 
-  // ── Left ──────────────────────────────────────────────────────
   "hyprland/workspaces": {
     "on-click": "activate",
     "on-scroll-up": "hyprctl dispatch workspace e+1",
@@ -57,33 +57,33 @@
     }
   },
   "hyprland/window": {
-    "format": "<span weight='bold'>{initialTitle}</span>",
+    "format": "{}",
     "max-length": 28,
     "icon": true,
     "icon-size": 14,
     "separate-outputs": true
   },
   "custom/cava": {
-    "format": "{}",
+    "format": "<span color='#313244'>|</span>{}<span color='#313244'>|</span>",
     "exec": "~/.config/waybar/cava.sh"
   },
   "mpris": {
-    "format": "{status_icon} {artist} - {title}",
-    "format-paused": "{status_icon} {artist} - {title}",
+    "format": "{player_icon} {status_icon} {title}",
+    "format-paused": "{player_icon} {status_icon} {title}",
     "format-stopped": "{status_icon}",
     "format-disconnected": "",
     "player-icons": {
       "default": "",
-      "mpv": "",
-      "spotify": "",
-      "firefox": "",
-      "chromium": "",
-      "brave": ""
+      "mpv": "\uf36e",
+      "spotify": "\uf1bc",
+      "firefox": "\ue745",
+      "chromium": "\uf268",
+      "brave": "\ueaae"
     },
     "status-icons": {
-      "playing": "▶",
-      "paused": "⏸",
-      "stopped": "⏹"
+      "playing": "\uf04c",
+      "paused": "\uf04b",
+      "stopped": "\uf04d"
     },
     "tooltip-format": "{title}\n{artist} - {album}\n{position}/{length}",
     "tooltip-format-paused": "{title}\n{artist} - {album}\nPaused",
@@ -94,23 +94,24 @@
     "max-length": 32
   },
 
-  // ── Center ────────────────────────────────────────────────────
   "clock": {
-    "format": "{:%a %H:%M}",
-    "format-alt": "{:%d %B W%V %Y}",
+    "format": "{:%Y-%m-%d %a %H:%M}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "timezone": "MST",
+    // "on-click": "lvsk-calendar-launcher",
     "calendar": {
       "mode": "month",
       "format": {
-        "today": "<span color='#ff9b71'><b>{}</b></span>"
+        "today": "<span color='#ff9b71'><b>{}</b></span>",
+        "weekdays": "<span color='#313244'><b>{}</b></span>",
+        "days": "<span color='#cdd6f4'><b>{}</b></span>"
       }
     }
   },
-  "custom/calendar": {
-    "format": "󰃭",
-    "on-click": "lvsk-calendar-launcher",
-    "tooltip-format": "Open calendar"
-  },
+  // "custom/calendar": {
+  //   "format": "󰃭",
+  //   "tooltip-format": "Open calendar"
+  // },
   "custom/weather": {
     "format": "{}",
     "tooltip": true,
@@ -127,7 +128,6 @@
   //   "on-click": "ghostty -e btop"
   // },
 
-  // ── Right ─────────────────────────────────────────────────────
   "tray": {
     "icon-size": 13,
     "spacing": 12
@@ -166,14 +166,26 @@
   },
   "pulseaudio": {
     "format": "{volume}% {icon}",
-    "format-muted": "{volume}% 󰝟",
+    "format-muted": "{volume}% \ueee8",
     "format-icons": {
-      "headphone": "",
-      "default": ["", "", ""]
+      // "default": ["\uf026", "\uf027", "\uf028"]
+      "default": ["\u2581","\u2582","\u2583","\u2584","\u2585","\u2586","\u2587","\u2588"]
     },
     "scroll-step": 5,
     "on-click": "~/.config/waybar/pavucontrol-toggle.sh",
     "on-click-right": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
     "tooltip-format": "{volume}% — {desc}"
+  },
+  "custom/updates": {
+    "format": "{}",
+    "exec": "~/.config/waybar/arch-updates.sh",
+    "return-type": "json",
+    "interval": 1800,
+    "signal": 8,
+    // Left-click: full system + AUR upgrade in a terminal, then refresh the
+    // module. Terminal stays open until a keypress so you can read the result.
+    "on-click": "~/.local/bin/toastty -- bash -c 'echo \"Starting updates\" && paru -Syu; echo; read -n1 -s -r -p \"Update finished — press any key to close\"; pkill -RTMIN+8 waybar'",
+    // Right-click: just re-check (no upgrade).
+    "on-click-right": "pkill -RTMIN+8 waybar"
   }
 }

@@ -1,13 +1,14 @@
 /* ───────────────────────────────────────────────────────────────
    Waybar style — HANCORE/Omarchy-inspired, self-contained.
    No external theme import: the palette is defined right here so
-   it works without Omarchy. Tweak @rd1 to re-tint the whole bar.
+   it works without Omarchy. Tweak @accent to re-tint the whole bar.
    ─────────────────────────────────────────────────────────────── */
 
 @define-color fg       #cdd6f4;  /* default text          */
-@define-color rd1      #ff9b71;  /* coral accent          */
+@define-color accent   #ff9b71;  /* coral accent          */
 @define-color dark-bg  #11111b;  /* module background     */
 @define-color hover-bg #313244;  /* hover background      */
+@define-color muted    #313244;  /* muted */
 
 * {
   font-family: 'MesloLGS Nerd Font Propo', 'JetBrainsMono Nerd Font Propo', monospace;
@@ -21,7 +22,7 @@
 tooltip {
   background: @dark-bg;
   border-radius: 15px;
-  border: 1px solid @rd1;
+  border: 1px solid @accent;
 }
 
 tooltip label {
@@ -33,7 +34,6 @@ window#waybar {
   background-color: transparent;
   transition-property: background-color;
   transition-duration: .5s;
-  margin: 10px;
 }
 
 window#waybar.hidden {
@@ -45,14 +45,6 @@ window#waybar.hidden {
 .modules-right {
   background: transparent;
   margin: 5px;
-}
-
-#workspaces {
-  background-color: @dark-bg;
-  margin: 2px 4px;
-  padding: 0 5px;
-  border-radius: 20px;
-  opacity: 0.9;
 }
 
 #workspaces button {
@@ -72,7 +64,7 @@ window#waybar.hidden {
 }
 
 #workspaces button.active {
-  background-color: @rd1;
+  background-color: @accent;
   color: @dark-bg;
   min-width: 30px;
 }
@@ -86,9 +78,10 @@ window#waybar.hidden {
   color: #6c7086;
 }
 
+#workspaces,
 #tray,
 #window,
-#cava,
+#custom-cava,
 #mpris,
 #memory,
 #temperature,
@@ -96,26 +89,32 @@ window#waybar.hidden {
 #custom-weather,
 #custom-calendar,
 #custom-netspeed,
+#custom-updates,
 #clock,
 #disk {
   background-color: @dark-bg;
   color: @fg;
   margin: 2px;
-  padding: 2px 15px;
+  padding: 0px 15px;
   border-radius: 20px;
   opacity: 0.9;
+  border: 1px solid @muted;
 }
 
 #window {
   margin: 2px 4px;
 }
 
+window#waybar.empty #window {
+  opacity: 0;
+}
+
 #clock {
   font-weight: 800;
 }
 
-#cava {
-  color: @rd1;
+#custom-cava {
+  color: @accent;
   padding: 0 12px;
 }
 
@@ -134,7 +133,11 @@ window#waybar.hidden {
 #disk:hover,
 #mpris:hover {
   background-color: @hover-bg;
-  color: @rd1;
+  color: @accent;
+}
+
+#pulseaudio {
+  min-width: 50px; 
 }
 
 #mpris {
@@ -165,3 +168,20 @@ window#waybar.hidden {
     color: #f38ba8;
   }
 }
+
+/* Arch update status — colour driven by the class from arch-updates.sh.
+   Hover lifts the background but keeps the state colour visible. */
+#custom-updates.updated { color: @muted; }
+#custom-updates.pending { color: @fg; }
+#custom-updates.stale {
+  color: @accent;
+  background-color: rgba(243, 139, 168, 0.18);
+}
+
+#custom-updates:hover {
+  background-color: @hover-bg;
+}
+
+.fg     { color: @fg; }
+.accent { color: @accent; }
+.muted  { color: @muted; }

@@ -6,22 +6,25 @@
 # main shell (not a pipeline subshell), writes are guarded against a
 # broken pipe, and the CAVA child is reaped on exit.
 
-# Unicode bars (levels 0–7)
-bars=(▁ ▂ ▃ ▄ ▅ ▆ ▇ █)
+# Unicode bars (levels 0–8)
+# bars=(" " ▁ ▂ ▃ ▄ ▅ ▆ ▇ █)
+# bars=(" " ⡀ ⢀ ⣀ ⣄ ⣠ ⣤ ⣦ ⣴ ⣶ ⣷ ⣾ ⣿)
+bars=(" " ⡀ ⣀ ⣄ ⣤ ⣦ ⣶ ⣷ ⣿)
 
 # Write a throwaway CAVA config that emits raw ascii to stdout.
 config_file="/tmp/waybar_cava_config"
 cat > "$config_file" <<EOF
 [general]
-bars = 24
-framerate = 60
+bars = 10
+framerate = 30
 autosens = 1
 
 [output]
+channels = mono
 method = raw
 raw_target = /dev/stdout
 data_format = ascii
-ascii_max_range = 7
+ascii_max_range = ${#bars[@]}
 EOF
 
 # Run CAVA as a child we can read from and clean up after.
@@ -53,22 +56,22 @@ convert_to_bars() {
 }
 
 while IFS= read -r line <&"$cava_fd"; do
-    now=$(date +%s)
+    # now=$(date +%s)
 
     # All-zero line == silence
-    if [[ "$line" =~ ^(0;?)+$ ]]; then
-        (( pause_start == 0 )) && pause_start=$now
+    # if [[ "$line" =~ ^(0;?)+$ ]]; then
+    #     (( pause_start == 0 )) && pause_start=$now
 
-        # Hide after 2 seconds of continuous silence.
-        if (( now - pause_start >= 2 )); then
-            emit ""
-        else
-            convert_to_bars "$line"
-        fi
-        continue
-    fi
+    #     # Hide after 2 seconds of continuous silence.
+    #     if (( now - pause_start >= 2 )); then
+    #         emit ""
+    #     else
+    #         convert_to_bars "$line"
+    #     fi
+    #     continue
+    # fi
 
     # Audio is back — reset the silence timer and draw.
-    pause_start=0
+    # pause_start=0
     convert_to_bars "$line"
 done
