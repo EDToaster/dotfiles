@@ -29,6 +29,19 @@ path = "hyprland.conf"
 install_location = { linux = "~/.config/hypr/hyprland.conf" }
 
 [[configs]]
+name = "main hyprland config (lua)"
+path = "hyprland.lua"
+install_location = { linux = "~/.config/hypr/hyprland.lua" }
+
+[[configs]]
 name = "hyprtoolkit theme"
 path = "hyprtoolkit.conf"
 install_location = { linux = "~/.config/hypr/hyprtoolkit.conf" }
+
+# lua-language-server config so hyprland.lua resolves the `hl` global from
+# Hyprland's shipped type stubs (/usr/share/hypr/stubs). Kills "undefined
+# global hl" warnings and enables autocomplete for hl.* / hl.dsp. / config keys.
+[[configs]]
+name = "lua-language-server config"
+path = ".luarc.json"
+install_location = { linux = "~/.config/hypr/.luarc.json" }
