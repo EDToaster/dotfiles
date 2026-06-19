@@ -45,3 +45,11 @@ install_location = { linux = "~/.config/hypr/hyprtoolkit.conf" }
 name = "lua-language-server config"
 path = ".luarc.json"
 install_location = { linux = "~/.config/hypr/.luarc.json" }
+
+# rofi "command palette" of the keybinds defined above. Bound to SUPER + K.
+# Sources keybinds.lua under a stubbed `hl` to list every bind (incl. the
+# workspace loop) with a readable label, then runs the chosen one.
+[[configs]]
+name = "keybind palette script"
+path = "scripts/keybind-palette.sh"
+install_location = { linux = "~/.config/hypr/scripts/keybind-palette.sh" }

@@ -27,7 +27,7 @@
     // "memory",
     // "disk",
     "pulseaudio",
-    "custom/weather",
+    // "custom/weather",
     "clock"
   ],
 
@@ -65,6 +65,8 @@
   },
   "custom/cava": {
     "format": "{}",
+    // --progress: fill the bar left-to-right with the current output volume
+    // (drop the flag to restore the plain visualizer).
     "exec": "~/.config/waybar/cava-braille-hires.sh",
     "return-type": "json"
   },
@@ -100,7 +102,7 @@
   },
 
   "clock": {
-    "format": "{:%Y-%m-%d %a %H:%M}",
+    "format": "{:%d %a %H:%M}",
     "tooltip-format": "<tt><small>{calendar}</small></tt>",
     "timezone": "MST",
     // "on-click": "lvsk-calendar-launcher",
@@ -189,7 +191,7 @@
     "signal": 8,
     // Left-click: full system + AUR upgrade in a terminal, then refresh the
     // module. Terminal stays open until a keypress so you can read the result.
-    "on-click": "~/.local/bin/toastty -- bash -c 'echo \"Starting updates\" && paru -Syu; echo; read -n1 -s -r -p \"Update finished — press any key to close\"; pkill -RTMIN+8 waybar'",
+    "on-click": "~/.local/bin/toastty -- bash -c 'echo \"====> Starting updates\" && paru -Syu; echo; read -n1 -s -r -p \"====> Update finished — press any key to close\"; pkill -RTMIN+8 waybar'",
     // Right-click: just re-check (no upgrade).
     "on-click-right": "pkill -RTMIN+8 waybar"
   }

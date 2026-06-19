@@ -97,7 +97,7 @@ window#waybar.hidden {
   padding: 0px 15px;
   border-radius: 20px;
   opacity: 0.9;
-  border: 1px solid @muted;
+  /* border: 1px solid @muted; */
 }
 
 #workspaces {

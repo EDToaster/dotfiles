@@ -1,0 +1,129 @@
+# ─────────────────────────────────────────────────────────────
+# Ironbar config — ported from the Waybar config, same HANCORE/
+# Omarchy-inspired style. Built for Hyprland.
+#
+# Placed at the TOP of the screen on purpose: the existing Waybar
+# sits at the bottom, and each bar reserves an exclusive zone on
+# its own edge, so the two coexist without fighting for space.
+#
+# Module parity with the ACTIVE Waybar layout:
+#   start:  workspaces · music (mpris) · cava
+#   center: focused window
+#   end:    tray · updates · volume · weather · clock
+#
+# Ironbar has no native cava / updates / weather modules, so those
+# are Script modules driven by the helper scripts in this same
+# directory. They emit raw Pango markup instead of Waybar's JSON
+# envelope (Ironbar renders a Script module's stdout straight onto
+# a Pango label).
+#
+# Nerd-font glyphs are written as YAML \uXXXX escapes so they
+# survive copy/paste and diffs; block chars are kept literal.
+# ─────────────────────────────────────────────────────────────
+
+position: "top"
+height: 40
+# Reserve screen space at the top; Waybar keeps the bottom edge.
+exclusive_zone: true
+popup_gap: 6
+
+start:
+  - type: "workspaces"
+    # Hyprland is auto-detected — no enable flag needed.
+    all_monitors: false
+    # Always show 1–5 (Waybar's persistent-workspaces).
+    favorites: ["1", "2", "3", "4", "5"]
+    # Scroll over the strip to step workspaces (Waybar's on-scroll).
+    on_scroll_up: "hyprctl dispatch workspace e+1"
+    on_scroll_down: "hyprctl dispatch workspace e-1"
+
+  - type: "music"
+    name: "music"
+    player_type: "mpris"
+    format: "{title}"
+    show_status_icon: true
+    icon_size: 16
+    truncate:
+      mode: "end"
+      max_length: 30
+    icons:
+      play: ""
+      pause: ""
+    # Left-click opens Ironbar's media popup (cover art + transport +
+    # seek + volume) — supersedes Waybar's click = play/pause.
+
+  - type: "script"
+    name: "cava"
+    # Streaming visualiser. watch mode keeps one long-lived cava
+    # child and repaints the label on every frame it writes.
+    cmd: "~/.config/ironbar/cava-braille-hires.sh"
+    mode: "watch"
+
+center:
+  - type: "focused"
+    name: "window"
+    show_icon: true
+    show_title: true
+    icon_size: 14
+    truncate:
+      mode: "end"
+      max_length: 28
+
+end:
+  - type: "tray"
+    icon_size: 13
+
+  - type: "script"
+    name: "updates"
+    cmd: "~/.config/ironbar/arch-updates.sh"
+    mode: "poll"
+    interval: 1800000          # 30 min, matches Waybar's interval
+    # Same script with a `tooltip` arg prints the multi-line tooltip.
+    tooltip: "{{1800000:~/.config/ironbar/arch-updates.sh tooltip}}"
+    # Left-click: full system + AUR upgrade in a terminal that stays
+    # open until a keypress. (Waybar's pkill-refresh signal has no
+    # Ironbar equivalent, so the bar just refreshes on the next poll.)
+    on_click_left: "~/.local/bin/toastty -- bash -c 'echo \"Starting updates\" && paru -Syu; echo; read -n1 -s -r -p \"Update finished — press any key to close\"'"
+
+  - type: "volume"
+    name: "volume"
+    format: "{percentage}% {icon}"
+    mute_format: "{percentage}% "
+    icons:
+      volume: "█"             # full block; profiles step it down
+      muted: ""
+    # Reproduce Waybar's 8-level block-character volume meter. A
+    # profile matches when volume <= its `when`, and the lowest
+    # matching threshold wins, so the glyph ramps down as volume
+    # drops. (If your build picks the HIGHEST match instead, just
+    # reverse the block chars.)
+    profiles:
+      l7: { when: 87, icons: { volume: "▇" } }
+      l6: { when: 75, icons: { volume: "▆" } }
+      l5: { when: 62, icons: { volume: "▅" } }
+      l4: { when: 50, icons: { volume: "▄" } }
+      l3: { when: 37, icons: { volume: "▃" } }
+      l2: { when: 25, icons: { volume: "▂" } }
+      l1: { when: 12, icons: { volume: "▁" } }
+    # Left-click: pavucontrol toggle. Right-click: mute. Scroll: ±5%.
+    on_click_left: "~/.config/ironbar/pavucontrol-toggle.sh"
+    on_click_right: "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
+    on_scroll_up: "wpctl set-volume -l 1.0 @DEFAULT_AUDIO_SINK@ 5%+"
+    on_scroll_down: "wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+
+  - type: "script"
+    name: "weather"
+    # wttrbar --nerd emits Waybar JSON; weather.sh unwraps .text for
+    # the bar and .tooltip for the hover (via the `tooltip` arg).
+    cmd: "~/.config/ironbar/weather.sh"
+    mode: "poll"
+    interval: 600000           # 10 min, matches Waybar's interval
+    tooltip: "{{600000:~/.config/ironbar/weather.sh tooltip}}"
+    on_click_left: "curl -s 'wttr.in?format=3' | xargs -I {} notify-send 'Weather' {}"
+
+  - type: "clock"
+    name: "clock"
+    format: "%Y-%m-%d %a %H:%M"
+    format_popup: "%H:%M:%S"
+    # NOTE: Ironbar's clock uses the system local timezone; there is
+    # no per-module timezone option like Waybar's "timezone": "MST".

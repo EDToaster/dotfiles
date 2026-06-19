@@ -17,6 +17,40 @@
 # Same quiet-death design as cava-braille.sh: the read loop runs in the
 # main shell (not a pipeline subshell), writes are guarded against a
 # broken pipe, and the CAVA child is reaped on exit.
+#
+# Progress-bar mode (--progress): overlay the visualizer with a volume
+# "fill" that grows left-to-right with the system output volume. The
+# leftmost cells — a fraction equal to the current sink volume — get a
+# Pango background tinted with that column's own cava color, so the filled
+# region reads as a solid (per-column gradient) progress bar while the
+# rest of the bar keeps its normal look. Off by default, which preserves
+# the original behavior.
+
+# --progress turns on the volume fill; absence keeps the classic look.
+progress_mode=0
+for arg in "$@"; do
+    case "$arg" in
+        --progress|-p) progress_mode=1 ;;
+    esac
+done
+
+# Current sink volume as a 0..1000 per-mille fill level, refreshed every
+# few frames (querying wpctl ~6x/sec is plenty responsive for a knob you
+# turn by hand, and far cheaper than once per 30fps frame). A muted sink
+# reads as an empty bar.
+vol_pm=1000
+vol_frame=0
+vol_refresh=5
+read_volume() {
+    local out
+    out=$(wpctl get-volume @DEFAULT_AUDIO_SINK@ 2>/dev/null) || return
+    if [[ "$out" == *MUTED* ]]; then
+        vol_pm=0
+        return
+    fi
+    # "Volume: 0.45" -> 450; clamp into 0..1000 (volume can exceed 1.0).
+    vol_pm=$(awk '{v=$2*1000; if(v<0)v=0; if(v>1000)v=1000; printf "%d", int(v)}' <<< "$out")
+}
 
 # Braille dot bits (added to U+2800), bars growing from the bottom up.
 # Left column uses dots 7,3,2,1; right column uses dots 8,6,5,4.
@@ -117,6 +151,11 @@ convert_to_braille() {
     IFS=';' read -ra nums <<< "$1"
     top=""
     bot=""
+    # In progress mode, fill the leftmost cells in proportion to volume.
+    # Each glyph cell packs two cava bars, so there are ${#nums[@]}/2 cells.
+    ncells=$(( ${#nums[@]} / 2 ))
+    fill_cells=0
+    (( progress_mode && ncells > 0 )) && fill_cells=$(( (vol_pm * ncells + 500) / 1000 ))
     for (( i = 0; i < ${#nums[@]}; i += 2 )); do
         lv=${nums[i]}
         rv=${nums[i+1]:-0}
@@ -129,8 +168,14 @@ convert_to_braille() {
         # Tint both rows of this column by its taller raw level (0..8).
         cv=$(( lv > rv ? lv : rv ))
         col="${colors[cv]}"
+        # Only the bottom row shows progress. A Pango background always fills
+        # the full line height (and CSS can't reach individual spans), so for
+        # a genuinely thin progress line we underline the filled cells in
+        # their own bar color instead of painting a full-cell background.
+        bot_extra=""
+        # (( i / 2 < fill_cells )) && bot_extra=" underline='single' underline_color='#555555'"
         top+="<span foreground='${col}'>${braille[lt*5+rt]}</span>"
-        bot+="<span foreground='${col}'>${braille[lb*5+rb]}</span>"
+        bot+="<span foreground='${col}'${bot_extra}>${braille[lb*5+rb]}</span>"
     done
     # Frame each row with the muted pipe the old format drew around it.
     top="${frame}${top}${frame}"
@@ -142,6 +187,13 @@ convert_to_braille() {
 }
 
 while IFS= read -r line <&"$cava_fd"; do
+    # Refresh the sink volume every few frames so the progress fill tracks
+    # the current output level (only when --progress is set).
+    if (( progress_mode )); then
+        (( vol_frame == 0 )) && read_volume
+        vol_frame=$(( (vol_frame + 1) % vol_refresh ))
+    fi
+
     # now=$(date +%s)
 
     # All-zero line == silence

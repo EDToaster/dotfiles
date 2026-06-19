@@ -1,0 +1,67 @@
+# dotfile-rs config for ironbar (Hyprland, HANCORE/Omarchy-inspired style).
+# Ported from the Waybar config; lives at the TOP of the screen so it can
+# run alongside the existing Waybar (bottom) without an exclusive-zone clash.
+
+name = "ironbar"
+description = "ironbar dotfile config (workspaces, music, cava, focused, tray, updates, volume, weather, clock)"
+
+# Hard dependencies: a missing one (or non-zero exit) aborts the install.
+validation_commands = [
+  ["ironbar", "--version"],
+  ["cava", "-v"],
+  ["wttrbar", "--help"],
+  ["jq", "--version"],            # weather.sh unwraps wttrbar's JSON
+  ["playerctl", "--version"],     # mpris / music module
+]
+
+# Soft dependencies: only used by click actions / nice-to-haves, so a
+# missing one just warns instead of blocking the install.
+optional_validation_commands = [
+  ["checkupdates", "--help"],                                # arch-updates.sh (pacman-contrib)
+  ["paru", "--version"],                                     # arch-updates.sh AUR count + upgrade
+  ["wpctl", "--version"],                                    # volume scroll / mute (wireplumber)
+  ["pavucontrol", "--version"],                              # volume left-click
+  ["sh", "-c", "command -v notify-send"],                    # weather click notification
+  ["curl", "--version"],                                     # weather click
+  ["sh", "-c", "fc-list | grep -qi 'meslolgs nerd font'"],   # bar font (icons render correctly)
+]
+
+[[configs]]
+name = "main ironbar config"
+path = "config.yaml"
+install_location = { linux = "~/.config/ironbar/config.yaml" }
+
+[[configs]]
+name = "ironbar style"
+path = "style.css"
+install_location = { linux = "~/.config/ironbar/style.css" }
+
+[[configs]]
+name = "cava braille visualizer script (hires)"
+path = "cava-braille-hires.sh"
+install_location = { linux = "~/.config/ironbar/cava-braille-hires.sh" }
+
+[[configs]]
+name = "cava braille visualizer script"
+path = "cava-braille.sh"
+install_location = { linux = "~/.config/ironbar/cava-braille.sh" }
+
+[[configs]]
+name = "cava visualizer script"
+path = "cava.sh"
+install_location = { linux = "~/.config/ironbar/cava.sh" }
+
+[[configs]]
+name = "arch updates status script"
+path = "arch-updates.sh"
+install_location = { linux = "~/.config/ironbar/arch-updates.sh" }
+
+[[configs]]
+name = "weather (wttrbar) wrapper script"
+path = "weather.sh"
+install_location = { linux = "~/.config/ironbar/weather.sh" }
+
+[[configs]]
+name = "pavucontrol toggle + close-on-blur script"
+path = "pavucontrol-toggle.sh"
+install_location = { linux = "~/.config/ironbar/pavucontrol-toggle.sh" }

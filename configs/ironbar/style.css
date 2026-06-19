@@ -1,0 +1,150 @@
+/* ───────────────────────────────────────────────────────────────
+   Ironbar style — ported from the Waybar style.css, same
+   HANCORE/Omarchy-inspired palette.
+
+   Ironbar is GTK4, so the selectors differ from Waybar (GTK3):
+     · .background          -> top-level window  (was window#waybar)
+     · #bar #start/#center/#end -> the three containers
+     · .workspaces .item    -> a workspace button
+     · .item.focused        -> the active workspace (was .active)
+     · .item.inactive       -> an empty favourite  (was .empty)
+     · .music/.clock/.volume/.focused/.tray -> native modules
+     · #cava/#updates/#weather -> Script modules, by their `name`
+
+   State-driven colours (update count, cava amplitude) live in Pango
+   spans emitted by the scripts, not here — a Script module can't set
+   a CSS class from its output the way a Waybar custom module can.
+
+   Tweak @accent to re-tint the whole bar.
+   ─────────────────────────────────────────────────────────────── */
+
+@define-color fg       #cdd6f4;  /* default text      */
+@define-color accent   #ff9b71;  /* coral accent      */
+@define-color dark-bg  #11111b;  /* module background */
+@define-color hover-bg #313244;  /* hover background  */
+@define-color muted    #313244;  /* muted             */
+
+* {
+  font-family: 'MesloLGS Nerd Font Propo', 'JetBrainsMono Nerd Font Propo', monospace;
+  font-size: 13px;
+  font-weight: bold;
+  border: none;
+  border-radius: 20px;
+  min-height: 0;
+}
+
+tooltip {
+  background-color: @dark-bg;
+  border-radius: 15px;
+  border: 1px solid @accent;
+}
+
+tooltip label {
+  color: @fg;
+  padding: 5px;
+}
+
+/* Top-level window + the containers: transparent, so only the
+   per-module "chips" carry a background. */
+.background {
+  background-color: transparent;
+}
+
+#bar,
+#start,
+#center,
+#end {
+  background-color: transparent;
+  margin: 0px;
+}
+
+/* The module "chip": one rounded, bordered pill per module. Native
+   modules by class; the Script-based ones (cava/updates/weather) by
+   the #name set in config.yaml. */
+.workspaces,
+.music,
+.focused,
+.tray,
+.volume,
+.clock,
+#cava,
+#updates,
+#weather {
+  background-color: @dark-bg;
+  color: @fg;
+  margin: 2px;
+  padding: 0 15px;
+  border-radius: 20px;
+  opacity: 0.9;
+  border: 1px solid @muted;
+}
+
+/* Workspaces: the strip is the chip, each workspace is a button. */
+.workspaces {
+  padding: 2px;
+}
+
+.workspaces .item {
+  color: @fg;
+  background-color: transparent;
+  margin: 2px;
+  padding: 0 5px;
+  border-radius: 20px;
+  /* Animate colour only, not layout — animating width makes the
+     auto-sized strip bounce on workspace switch. */
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.workspaces .item:hover {
+  background-color: @hover-bg;
+  color: @fg;
+}
+
+.workspaces .item.focused {
+  background-color: @accent;
+  color: @dark-bg;
+}
+
+.workspaces .item.urgent {
+  color: #ff0000;
+  background-color: #f9e2af;
+}
+
+.workspaces .item.inactive {
+  color: #6c7086;
+}
+
+.focused {
+  margin: 2px 4px;
+}
+
+.clock {
+  font-weight: 800;
+}
+
+/* Cava: gradient/colour comes from the script's Pango spans, so here
+   we only set the smaller cell size + tighter padding. */
+#cava {
+  color: @accent;
+  padding: 0 12px;
+  font-size: 10px;
+}
+
+/* Hover: lift the background and tint the glyph with the accent.
+   (Update count keeps its own Pango colour, which wins over this.) */
+.music:hover,
+.volume:hover,
+.clock:hover,
+#weather:hover,
+#updates:hover {
+  background-color: @hover-bg;
+  color: @accent;
+}
+
+.volume {
+  min-width: 50px;
+}
+
+.music {
+  min-width: 200px;
+}

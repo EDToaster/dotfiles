@@ -34,7 +34,7 @@ end-of-line-diagnostics = "hint"
 left = [ "mode", "spinner", "file-name", "read-only-indicator", "file-modification-indicator", "separator", "version-control" ]
 center = ["file-type"]
 mode = { normal = "🏄 NORMAL", insert = "👉 INSERT", select = "🔍 SELECT" }
-separator = " "
+separator = " "
 
 [keys.normal]
 # Allow <esc> to collapse selection
@@ -59,6 +59,9 @@ C-w       = ":buffer-close"
 # Move line up/down using Control + arrow
 "C-down"  = "@ml\"mdj\"mP"
 "C-up"    = "@ml\"mdk\"mP"
+
+"C-d" = ":half-page-down-smooth"
+"C-u" = ":half-page-up-smooth"
 
 C-a = ":sh unibear add_file %{buffer_name}"
 
