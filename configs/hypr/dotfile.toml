@@ -23,15 +23,16 @@ optional_validation_commands = [
   ["sh", "-c", "command -v brightnessctl"],      # XF86MonBrightness* keys (laptop only)
 ]
 
-[[configs]]
-name = "main hyprland config"
-path = "hyprland.conf"
-install_location = { linux = "~/.config/hypr/hyprland.conf" }
 
 [[configs]]
 name = "main hyprland config (lua)"
 path = "hyprland.lua"
 install_location = { linux = "~/.config/hypr/hyprland.lua" }
+
+[[configs]]
+name = "config folder"
+path = "confs/"
+install_location = { linux = "~/.config/hypr/confs/" }
 
 [[configs]]
 name = "hyprtoolkit theme"
