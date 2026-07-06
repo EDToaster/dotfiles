@@ -25,7 +25,7 @@ local altMod  = "ALT"    -- Sets alt modifier, used for common stuff
 
 
 hl.bind(altMod .. " + SPACE" , hl.dsp.exec_cmd(menu))
-hl.bind(altMod .. " + K"     , hl.dsp.exec_cmd("~/.config/hypr/scripts/keybind-palette.sh"))
+hl.bind(altMod .. " + K"     , hl.dsp.exec_cmd("~/.config/hypr/scripts/menu.sh -t"))
 hl.bind(altMod .. " + Q"     , hl.dsp.window.close())
 
 -- Move focus with mainMod + arrow keys
@@ -43,8 +43,8 @@ hl.bind(mainMod .. " + D"     , hl.dsp.exec_cmd(terminal .. " --working-director
 hl.bind(mainMod .. " + F"     , hl.dsp.exec_cmd(browser))
 
 -- Scary Stuff
-hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("killall waybar; waybar"))
-hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
+-- hl.bind(mainMod .. " + SHIFT + R", hl.dsp.exec_cmd("killall waybar; waybar"))
+-- hl.bind(mainMod .. " + SHIFT + M", hl.dsp.exec_cmd("command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'"))
 
 -- Utilities
 hl.bind(mainMod .. " + P", hl.dsp.exec_cmd("grimblast copysave area -n"))

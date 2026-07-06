@@ -2,6 +2,11 @@
 
 alias z=zellij
 alias g=git
+alias cat=bat
+alias ls="eza -F --color=always"
+alias dd="echo 'aliases: use \`caligula\` instead'"
+
+eval "$(zoxide init zsh --cmd cd)"
 
 # cat() {
 #     if command -v bat &> /dev/null; then

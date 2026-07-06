@@ -86,36 +86,6 @@ fn validate_config(
 ) -> anyhow::Result<Link> {
     log::info!("{} {config}", "Validating".green());
 
-    let iter = prof
-        .validation_commands
-        .iter()
-        .cloned()
-        .map(|c| (c, false))
-        .chain(
-            prof.optional_validation_commands
-                .iter()
-                .cloned()
-                .map(|c| (c, true))
-                .collect::<Vec<_>>(),
-        );
-
-    // Run pre-validation commands on the profile
-    for (cmd, optional) in iter {
-        let cmd_str = cmd.join(" ");
-        log::info!("Spawning validation command (not escaped) {cmd_str:?}",);
-        if cmd.is_empty() {
-            bail!("Validation command cannot be empty.");
-        }
-
-        let res = validate_process(&cmd);
-
-        match res {
-            Err(e) if optional => log::warn!("{e}"),
-            Err(e) => bail!(e),
-            Ok(_) => {}
-        }
-    }
-
     let mut target_path = profile_base_path.clone();
     target_path.push(&config.path);
     let target_path = absolutize(&target_path.display().to_string());
@@ -165,6 +135,36 @@ fn validate_config(
 }
 
 fn validate(profile_base_path: &PathBuf, prof: &Profile) -> anyhow::Result<Vec<Link>> {
+    let iter = prof
+        .validation_commands
+        .iter()
+        .cloned()
+        .map(|c| (c, false))
+        .chain(
+            prof.optional_validation_commands
+                .iter()
+                .cloned()
+                .map(|c| (c, true))
+                .collect::<Vec<_>>(),
+        );
+
+    // Run pre-validation commands on the profile
+    for (cmd, optional) in iter {
+        let cmd_str = cmd.join(" ");
+        log::info!("Spawning validation command (not escaped) {cmd_str:?}",);
+        if cmd.is_empty() {
+            bail!("Validation command cannot be empty.");
+        }
+
+        let res = validate_process(&cmd);
+
+        match res {
+            Err(e) if optional => log::warn!("{e}"),
+            Err(e) => bail!(e),
+            Ok(_) => {}
+        }
+    }
+
     let links: Result<Vec<Link>, _> = prof
         .configs
         .iter()

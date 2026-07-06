@@ -1,0 +1,81 @@
+# menus.toml — declarative menu tree for the "walker" menu in
+# scripts/menu.sh. The harness parses this with Python's stdlib
+# tomllib (zero extra deps) and drives rofi per menu level.
+#
+# ICONS: written as TOML \u / \U escape codes, never as raw glyphs — so they
+# survive diffs, copy/paste, and editors that lack the Nerd Font. tomllib
+# decodes the escape; the harness emits UTF-8. Codepoints below are Nerd Font
+# (JetBrainsMono); the trailing comment names each glyph. Look others up at
+# nerdfonts.com/cheat-sheet. \uXXXX covers the BMP PUA (most icons); use
+# \U000XXXXX (8 digits) for Material-Design icons up in the U+F0000 plane.
+#
+# ENTRY = { icon, label, action, payload }
+#   action = "submenu"  → payload is the `name` of another [[menus]] block.
+#                         The harness appends a right-aligned chevron to the
+#                         row automatically — do NOT add one yourself.
+#   action = "command"  → payload is a shell command, launched detached via
+#                         [general].shell (so it outlives the menu).
+#   action = "about"    → shows a fastfetch-style system summary, rendered
+#                         read-only inside rofi (payload unused).
+# (The "Keybinds" entry is just a "command" that runs keybind-palette.sh — the
+#  menu has no special-cased keybind action.)
+
+[general]
+main_menu = "main"
+# How "command" payloads are run. Word-split, so keep the flag (e.g. "zsh -c").
+shell = "sh -c"
+
+# ── Top level ────────────────────────────────────────────────────────────
+[[menus]]
+name = "main"
+prompt = "menu"
+entries = [
+  { icon = "", label = "System",   action = "submenu",  payload = "system"   },
+  { icon = "", label = "Packages", action = "submenu",  payload = "packages" },
+  { icon = "", label = "Configs",  action = "submenu",  payload = "configs"  },
+  { icon = "", label = "Keybinds", action = "command",  payload = "~/.config/hypr/scripts/keybind-palette.sh" },
+  { icon = "", label = "About",    action = "about",    payload = ""         },
+]
+
+# ── System ─────────────────────────────────────────────────────────────────
+[[menus]]
+name = "system"
+prompt = "system"
+entries = [
+  { icon = "", label = "Sleep",     action = "command", payload = "systemctl suspend" },
+  { icon = "", label = "Log out",   action = "command", payload = "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'" },
+  { icon = "", label = "Poweroff",  action = "command", payload = "systemctl poweroff" },
+  { icon = "", label = "Resources", action = "command", payload = "~/.local/bin/toastty -- btop" },
+]
+
+# ── Packages ─────────────────────────────────────────────────────────────
+[[menus]]
+name = "packages"
+prompt = "packages"
+entries = [
+  { icon = "", label = "Install", action = "submenu", payload = "install" },
+  # Same command the waybar "custom/updates" module fires on left-click.
+  { icon = "", label = "Update",  action = "command", payload = "~/.local/bin/toastty -- bash -c 'echo \"====> Starting updates\" && paru -Syu; echo; read -n1 -s -r -p \"====> Update finished — press any key to close\"; pkill -RTMIN+8 waybar'" },
+]
+
+[[menus]]
+name = "install"
+prompt = "install"
+entries = [
+  { icon = "", label = "AUR",     action = "command", payload = "pacsea" },   
+  { icon = "", label = "Package", action = "command", payload = "pacsea" },   
+  { icon = "", label = "Flatpak", action = "command", payload = "shelly-ui" },
+]
+
+# ── Configs ──────────────────────────────────────────────────────────────
+[[menus]]
+name = "configs"
+prompt = "configs"
+entries = [
+  { icon = "", label = "Edit",    action = "command", payload = "~/.local/bin/toastty -- hx ~/.config" },         
+  { icon = "", label = "Hypr",    action = "command", payload = "~/.local/bin/toastty -- hx ~/.config/hypr/hyprland.lua" },    
+  { icon = "", label = "Waybar",  action = "command", payload = "~/.local/bin/toastty -- hx ~/.config/waybar/config.jsonc" },  
+  { icon = "", label = "Toastty", action = "command", payload = "~/.local/bin/toastty -- hx ~/.config/toastty/config.toml" }, 
+  { icon = "", label = "Helix",   action = "command", payload = "~/.local/bin/toastty -- hx ~/.config/helix/config.toml" },   
+]
+

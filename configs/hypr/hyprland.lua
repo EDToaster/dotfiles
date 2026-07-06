@@ -18,7 +18,6 @@ require("confs.theme")
 hl.on("hyprland.start", function()
     sync_dp1()  -- apply the right DP-1 profile for whatever mode it booted in
     hl.exec_cmd("waybar")  -- single, deterministic launch; the monitor path only RESTARTS it (see confs/monitors.lua)
-    -- hl.exec_cmd("hyprpaper")
     hl.exec_cmd("awww-daemon")
     hl.exec_cmd("hyprctl setcursor Bibata-Modern-Classic 24")
 end)
@@ -131,6 +130,13 @@ hl.window_rule({
 for i, monitor in ipairs(monitors) do
     hl.workspace_rule({ workspace = tostring(i), monitor = monitor})
 end
+
+hl.workspace_rule({ workspace = "w[tv1]", gaps_out = 0, gaps_in = 0 })
+hl.workspace_rule({ workspace = "f[1]", gaps_out = 0, gaps_in = 0 })
+hl.window_rule({ match = { float = false, workspace = "w[tv1]" }, border_size = 0 })
+hl.window_rule({ match = { float = false, workspace = "w[tv1]" }, rounding = 0 })
+hl.window_rule({ match = { float = false, workspace = "f[1]" }, border_size = 0 })
+hl.window_rule({ match = { float = false, workspace = "f[1]" }, rounding = 0 })
 
 hl.exec_cmd(
     "notify-send -u low -a Hyprland -t 4000 -A hi -A a " ..

@@ -32,7 +32,7 @@ install_location = { linux = "~/.config/hypr/hyprland.lua" }
 [[configs]]
 name = "config folder"
 path = "confs/"
-install_location = { linux = "~/.config/hypr/confs/" }
+install_location = { linux = "~/.config/hypr/confs" }
 
 [[configs]]
 name = "hyprtoolkit theme"

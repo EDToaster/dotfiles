@@ -5,7 +5,9 @@
 # theme = "catppuccin_frappe"
 # theme = "catppuccin_soft"
 # theme = "everforest_dark"
-theme = "gruvbox_transparent"
+# theme = "sonokai"
+# theme = "gruvbox_transparent"
+theme = "everocean"
 
 [editor]
 mouse = true
