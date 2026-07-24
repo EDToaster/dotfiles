@@ -213,6 +213,7 @@ dependencies = [
  "serde",
  "shellexpand",
  "toml",
+ "toml_edit",
 ]
 
 [[package]]

@@ -25,6 +25,7 @@ local altMod  = "ALT"    -- Sets alt modifier, used for common stuff
 
 
 hl.bind(altMod .. " + SPACE" , hl.dsp.exec_cmd(menu))
+hl.bind(altMod .. " + TAB"   , hl.dsp.exec_cmd("~/.config/hypr/scripts/window-switcher.sh"))
 hl.bind(altMod .. " + K"     , hl.dsp.exec_cmd("~/.config/hypr/scripts/menu.sh -t"))
 hl.bind(altMod .. " + Q"     , hl.dsp.window.close())
 
