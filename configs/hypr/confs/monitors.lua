@@ -6,7 +6,7 @@
 -- See https://wiki.hypr.land/Configuring/Basics/Monitors/
 
 -- DP-2 (ASUS VG259QM) is fixed.
-hl.monitor({ output = "DP-2", mode = "1920x1080@239.76", position = "-1120x384", scale = 1 })
+hl.monitor({ output = "DP-2", mode = "1920x1080@239.76", position = "0x384", scale = 1 })
 
 -- DP-1 (LG UltraGear+) has a hardware button that toggles the panel between
 -- 4K@165 and 1080p@330. Each toggle re-plugs the monitor (disconnect +
@@ -22,11 +22,11 @@ local DP2 = "DP-2"
 local DP1_SERIAL = "509NTJJSE892"  -- LG UltraGear+
 
 local function dp1_4k()
-    hl.monitor({ output = DP1, mode = "3840x2160@165.06", position = "800x128", scale = 1.25 })
+    hl.monitor({ output = DP1, mode = "3840x2160@165.06", position = "-3072x128", scale = 1.25 })
 end
 
 local function dp1_1080p()
-    hl.monitor({ output = DP1, mode = "1920x1080@330.12", position = "800x384", scale = 1 })
+    hl.monitor({ output = DP1, mode = "1920x1080@330.12", position = "-1920x384", scale = 1 })
 end
 
 -- Desktop notification via mako (notify-send -> org.freedesktop.Notifications).
@@ -110,4 +110,4 @@ end)
 -- monitor.added handler above applies it once DP-1 appears.)
 sync_dp1()
 
-return {DP2, DP1}
+return {DP1, DP2}
