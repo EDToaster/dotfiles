@@ -17,6 +17,26 @@ popup() {
     mkfifo "$output"
     # redirect zellij stdout as it prints the terminal ID
     zellij run -n Yazi -ci -- bash -c "exec 3<> '$output'; $cmd; exec 3>&-" >/dev/null 2>&1
+  elif [ -n "$HERDR_ENV" ]; then
+    mkfifo "$output"
+    # herdr has no CLI popup for arbitrary commands (popup placement is
+    # plugin-only), so open a pane, zoom it to a full-screen overlay, run the
+    # command there, and let the pane close itself once the command exits. The
+    # fifo (held open via fd 3) both unblocks the read below and lets an
+    # unpicked exit report EOF instead of hanging.
+    local pane_id
+    pane_id=$(herdr pane split --current --direction down --focus 2>/dev/null \
+      | grep -oE '"pane_id":"[^"]+"' | head -1 | cut -d'"' -f4)
+    if [ -n "$pane_id" ]; then
+      herdr pane zoom "$pane_id" --on >/dev/null 2>&1
+      herdr pane run "$pane_id" \
+        "bash -c \"exec 3<> '$output'; $cmd; exec 3>&-; herdr pane close '$pane_id'\"" \
+        >/dev/null 2>&1
+    else
+      # split failed: unblock the read below with EOF so we don't hang forever
+      echo "Error: herdr pane split failed" >&2
+      exec 3<> "$output"; exec 3>&-
+    fi
   elif [ -n "$CMUX_SOCKET_PATH" ]; then
     : > "$output"
     cmux run --wait -- $cmd
