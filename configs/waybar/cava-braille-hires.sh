@@ -71,6 +71,9 @@ for (( l = 0; l < 5; l++ )); do
     done
 done
 
+# Stand-in for the blank cell (single dot, rendered nearly transparent).
+printf -v blank_glyph "\u2801"
+
 # Amplitude gradient: each column is tinted by its (taller) bar height.
 # Raw cava levels now run 0..8, so we precompute one color per level by
 # interpolating across the stops below. Add/remove/recolor stops freely
@@ -174,8 +177,19 @@ convert_to_braille() {
         # their own bar color instead of painting a full-cell background.
         bot_extra=""
         # (( i / 2 < fill_cells )) && bot_extra=" underline='single' underline_color='#555555'"
-        top+="<span foreground='${col}'>${braille[lt*5+rt]}</span>"
-        bot+="<span foreground='${col}'${bot_extra}>${braille[lb*5+rb]}</span>"
+        # Empty cells are U+2800, which newer waybar drops like whitespace
+        # and collapses the row. Draw them as a dot at ~0% alpha instead:
+        # not whitespace, so it keeps its width, but invisible.
+        if (( lt + rt == 0 )); then
+            top+="<span foreground='${col}' alpha='1%'>${blank_glyph}</span>"
+        else
+            top+="<span foreground='${col}'>${braille[lt*5+rt]}</span>"
+        fi
+        if (( lb + rb == 0 )); then
+            bot+="<span foreground='${col}' alpha='1%'>${blank_glyph}</span>"
+        else
+            bot+="<span foreground='${col}'${bot_extra}>${braille[lb*5+rb]}</span>"
+        fi
     done
     # Frame each row with the muted pipe the old format drew around it.
     top="${frame}${top}${frame}"

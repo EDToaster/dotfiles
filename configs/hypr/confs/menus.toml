@@ -43,8 +43,9 @@ name = "system"
 prompt = "system"
 entries = [
   { icon = "", label = "Sleep",     action = "command", payload = "systemctl suspend" },
-  { icon = "", label = "Log out",   action = "command", payload = "command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'" },
-  { icon = "", label = "Poweroff",  action = "command", payload = "systemctl poweroff" },
+  { icon = "", label = "Log out",   action = "command", payload = "~/.config/hypr/scripts/menu.sh --confirm-windows \"log out\" sh -c \"command -v hyprshutdown >/dev/null 2>&1 && hyprshutdown || hyprctl dispatch 'hl.dsp.exit()'\"" },
+  { icon = "", label = "Poweroff",  action = "command", payload = "~/.config/hypr/scripts/menu.sh --confirm-windows poweroff systemctl poweroff" },
+  { icon = "\uf17a", label = "Boot into Windows",   action = "command", payload = "~/.config/hypr/scripts/menu.sh --confirm-windows \"boot into Windows\" ~/.config/hypr/scripts/reboot-windows.sh" },
   { icon = "", label = "Resources", action = "command", payload = "~/.local/bin/toastty -- btop" },
 ]
 

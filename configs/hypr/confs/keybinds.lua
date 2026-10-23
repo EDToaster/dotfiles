@@ -1,4 +1,4 @@
-local terminal    = "~/.local/bin/toastty"
+local terminal    = "~/.cargo/bin/toastty"
 local fileManager = "dolphin"
 local menu        = "~/.config/rofi/launchers/type-6/launcher.sh || pkill rofi"
 local browser     = "firefox"
